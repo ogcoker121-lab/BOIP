@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SnagDrops.online Content Bot</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="panel control-panel" aria-labelledby="app-title">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">SnagDrops.online</p>
+            <h1 id="app-title">Deal content command center</h1>
+          </div>
+          <button id="buildCalendar" class="ghost-button" type="button">Build 7-day plan</button>
+        </div>
+
+        <form id="contentForm" class="composer">
+          <div class="brand-card">
+            <strong>Brand direction</strong>
+            <p>SnagDrops.online helps shoppers discover deals, discounts, affiliate offers, limited-time drops, and smart buying opportunities.</p>
+          </div>
+
+          <details class="settings-card">
+            <summary>Your socials</summary>
+            <div class="grid two">
+              <label>Instagram <input id="social-instagram" type="text" placeholder="@snagdrops or link" /></label>
+              <label>Facebook <input id="social-facebook" type="text" placeholder="Page name or link" /></label>
+              <label>TikTok <input id="social-tiktok" type="text" placeholder="@snagdrops or link" /></label>
+              <label>YouTube <input id="social-youtube" type="text" placeholder="Channel or link" /></label>
+              <label>X <input id="social-x" type="text" placeholder="@snagdrops or link" /></label>
+              <label>Email/list <input id="social-email" type="text" placeholder="Newsletter or contact link" /></label>
+            </div>
+            <button id="saveSocials" class="ghost-button" type="button">Save socials</button>
+            <p id="socialStatus" class="status-line" role="status"></p>
+          </details>
+
+          <label>
+            Brand or website
+            <input id="brand" name="brand" type="text" value="SnagDrops.online" />
+          </label>
+
+          <label>
+            Topic or deal
+            <input id="topic" name="topic" type="text" placeholder="Example: weekend tech deals under £50" required />
+          </label>
+
+          <div class="grid two">
+            <label>
+              Pillar
+              <select id="pillar" name="pillar">
+                <option value="Daily Deals">Daily Deals</option>
+                <option value="Smart Shopping">Smart Shopping</option>
+                <option value="Limited-Time Drops">Limited-Time Drops</option>
+                <option value="Product Reviews">Product Reviews</option>
+                <option value="Affiliate Picks">Affiliate Picks</option>
+                <option value="Money-Saving Tips">Money-Saving Tips</option>
+                <option value="Seasonal Offers">Seasonal Offers</option>
+              </select>
+            </label>
+
+            <label>
+              Message type
+              <select id="messageType" name="messageType">
+                <option value="post">Create a post</option>
+                <option value="deal">Create product deal post</option>
+                <option value="affiliate">Create affiliate offer post</option>
+                <option value="blog">Write a blog</option>
+                <option value="video">Create short video script</option>
+                <option value="group">Engage with a group</option>
+                <option value="partner">Approach affiliate partner</option>
+              </select>
+            </label>
+
+            <label>
+              Goal
+              <select id="goal" name="goal">
+                <option value="drive clicks">Drive clicks</option>
+                <option value="promote">Promote</option>
+                <option value="educate">Educate</option>
+                <option value="announce">Announce</option>
+                <option value="sell">Sell</option>
+                <option value="engage">Get comments</option>
+              </select>
+            </label>
+
+            <label>
+              Tone
+              <select id="tone" name="tone">
+                <option value="helpful">Helpful</option>
+                <option value="friendly">Friendly</option>
+                <option value="professional">Professional</option>
+                <option value="excited">Excited</option>
+                <option value="urgent">Urgent</option>
+                <option value="bold">Bold</option>
+              </select>
+            </label>
+
+            <label>
+              Angle
+              <select id="angle" name="angle">
+                <option value="Everyday savings">Everyday savings</option>
+                <option value="Flash deal urgency">Flash deal urgency</option>
+                <option value="Premium product pick">Premium product pick</option>
+                <option value="Budget-friendly">Budget-friendly</option>
+                <option value="Gift guide">Gift guide</option>
+                <option value="Seasonal campaign">Seasonal campaign</option>
+              </select>
+            </label>
+
+            <label>
+              Image scene
+              <select id="imageScene" name="imageScene">
+                <option value="deal">Deal card graphic</option>
+                <option value="product">Product close-up</option>
+                <option value="lifestyle">Lifestyle shopping scene</option>
+                <option value="desk">Comparison desk setup</option>
+                <option value="gift">Gift guide layout</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Deal details
+            <textarea id="dealDetails" name="dealDetails" rows="4" placeholder="Paste product name, affiliate link, price, original price, discount code, expiry date, and key benefits. Do not invent prices."></textarea>
+          </label>
+
+          <details class="settings-card">
+            <summary>Research and sources</summary>
+            <label>Research notes <textarea id="researchNotes" name="researchNotes" rows="5" placeholder="Paste verified facts, product specs, review notes, competitor observations, or customer insights."></textarea></label>
+            <label>Source links <textarea id="sourceLinks" name="sourceLinks" rows="3" placeholder="Paste trusted links here, one per line."></textarea></label>
+          </details>
+
+          <label>
+            Visual asset notes
+            <textarea id="assetNotes" name="assetNotes" rows="3" placeholder="Example: SnagDrops logo, product photos, sale badge, affiliate screenshot, brand colors."></textarea>
+          </label>
+
+          <fieldset>
+            <legend>Platforms</legend>
+            <div id="platforms" class="platform-grid"></div>
+          </fieldset>
+
+          <label class="check-row">
+            <input id="includeDisclosure" name="includeDisclosure" type="checkbox" checked />
+            Include affiliate disclosure
+          </label>
+
+          <label class="check-row">
+            <input id="useAi" name="useAi" type="checkbox" />
+            Use OpenAI backend when available
+          </label>
+          <p id="aiStatus" class="status-line" role="status"></p>
+
+          <button class="primary-button" type="submit">Create content</button>
+        </form>
+      </section>
+
+      <section class="panel output-panel" aria-labelledby="drafts-title">
+        <div class="panel-header compact">
+          <div>
+            <p class="eyebrow">Draft Queue</p>
+            <h2 id="drafts-title">Ready-to-use deal content</h2>
+          </div>
+          <button id="clearDrafts" class="ghost-button danger" type="button">Clear</button>
+        </div>
+        <div id="drafts" class="drafts empty-state">Add a deal or topic, then create your first SnagDrops draft.</div>
+      </section>
+
+      <section class="panel calendar-panel" aria-labelledby="calendar-title">
+        <div class="panel-header compact">
+          <div>
+            <p class="eyebrow">Manager</p>
+            <h2 id="calendar-title">Posting calendar</h2>
+          </div>
+        </div>
+        <div id="calendar" class="calendar"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
