@@ -2,6 +2,43 @@
 
 All notable changes to BOIP are documented in this file.
 
+## v0.2.0 (pending release)
+
+### Added
+
+- Interview persistence: progress auto-saves and resumes across browser
+  refreshes and return visits
+- `InterviewRepository` interface with in-memory and Supabase
+  implementations
+- Minimal Supabase schema (`interviews`, `interview_answers`)
+- Service layer: `POST/GET/PATCH /api/interview[/:id]`
+- Anonymous sessions (no authentication) via a client-generated interview id
+
+### Architecture
+
+- Repository pattern: UI and API routes never depend on where interview
+  data lives; Supabase is a swappable implementation, not a hard dependency
+- App stays fully buildable/testable with zero external setup (in-memory
+  fallback when Supabase env vars aren't set)
+
+### Excluded
+
+- AI
+- Authentication
+- Payments
+- Analytics
+- Scoring
+- Recommendation Engine
+- Founder Intelligence Report
+
+### Changed
+
+- N/A
+
+### Fixed
+
+- N/A
+
 ## v0.1.0
 
 ### Added
