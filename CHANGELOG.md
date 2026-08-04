@@ -2,7 +2,52 @@
 
 All notable changes to BOIP are documented in this file.
 
-## v0.3.0 (pending release)
+## v0.4.0 (pending release)
+
+### Added
+
+- Recommendation Engine: the Opportunity Snapshot's "Recommended Next
+  Steps" list is replaced with ordered Recommendation Cards - title, why
+  it matters, priority, estimated effort, expected impact, and a concrete
+  action checklist
+- `Recommendation` domain model with a permanent `id` (`REC-xxx`) and
+  stable `frameworkReferences` (`FW-xxx`) instead of free-text names -
+  the start of BOIP's internal ontology
+- Recommendation knowledge across six categories: Customer Discovery,
+  Business Model, Market Validation, Pricing, Competition, MVP
+- Deterministic ordering: priority, then impact, then effort
+
+### Architecture
+
+- New domain, `src/domain/recommendation/`, separate from
+  `src/domain/opportunity/` - each capability owns its own domain
+- The generic rule engine moved to `src/domain/shared/rule-engine.ts` and
+  is reused by both domains - no second engine
+- Opportunity's old next-step knowledge (business-stage, revenue-model)
+  is retired; "what to do next" now lives entirely in the recommendation
+  domain
+- `OpportunityContext` construction (`buildOpportunityContext`) is shared
+  between both domains so they read the interview identically
+
+### Excluded
+
+- AI / LLM-generated recommendations
+- Opportunity Score
+- Payments
+- Authentication
+- Analytics
+- Reports
+
+### Changed
+
+- "Recommended Next Steps" (plain text list) replaced by "Recommended
+  Actions" (Recommendation Cards)
+
+### Fixed
+
+- N/A
+
+## v0.3.0
 
 ### Added
 
