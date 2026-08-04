@@ -1,5 +1,7 @@
-// Generic, reusable across BOIP's future rule-driven layers (scoring,
-// recommendations) - knows nothing about interviews, opportunities, or UI.
+// The one generic evaluation engine for BOIP's knowledge-driven domains.
+// Knows nothing about interviews, opportunities, recommendations, or UI -
+// every domain (opportunity/, recommendation/, and future scoring/) reuses
+// this rather than each building its own.
 
 export interface Rule<Context, Result> {
   when: Partial<Context>;

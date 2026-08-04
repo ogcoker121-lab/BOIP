@@ -1,4 +1,4 @@
-import { Rule } from "../rule-engine";
+import { Rule } from "@/src/domain/shared/rule-engine";
 import { OpportunityContext } from "../context";
 
 export const customerValidationStrengths: Rule<OpportunityContext, string>[] = [

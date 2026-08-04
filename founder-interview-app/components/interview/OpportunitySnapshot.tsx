@@ -4,7 +4,6 @@ import FounderSummary from "./FounderSummary";
 import OpportunityOverview from "./OpportunityOverview";
 import StrengthsList from "./StrengthsList";
 import WatchList from "./WatchList";
-import NextSteps from "./NextSteps";
 
 interface OpportunitySnapshotProps {
   snapshot: OpportunitySnapshotData;
@@ -24,7 +23,7 @@ export default function OpportunitySnapshot({ snapshot, onRestart }: Opportunity
         <OpportunityOverview overview={snapshot.overview} />
         <StrengthsList items={snapshot.strengths} />
         <WatchList items={snapshot.watchList} />
-        <NextSteps items={snapshot.nextSteps} />
+        {/* Recommended Actions (recommendation domain) lands in a later commit */}
       </div>
 
       <Link
