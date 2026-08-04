@@ -1,18 +1,17 @@
 import { InterviewAnswers } from "@/types/interview";
-import { evaluateRules } from "./rule-engine";
-import { OpportunityContext } from "./context";
+import { evaluateRules } from "@/src/domain/shared/rule-engine";
+import { OpportunityContext, buildOpportunityContext } from "./context";
 import { OpportunitySnapshot } from "./snapshot-model";
-import { businessStageNextSteps } from "./knowledge/business-stage";
-import { revenueModelNextSteps } from "./knowledge/revenue-model";
 import { alwaysWatchItems, customerValidationStrengths, customerValidationWatchItems } from "./knowledge/customer-validation";
 import { pricingWatchItems } from "./knowledge/pricing";
 
 // Interview -> Interview Service -> Opportunity Mapper -> Rule Engine ->
 // Snapshot Model -> UI. This file is the mapper: it turns raw interview
 // answers into an OpportunityContext, hands that to the rule engine against
-// each topic's rules, and assembles the result into an OpportunitySnapshot.
-// Pure, no UI or network dependency - callable from a page (as it is today)
-// or a server route later without changing anything here.
+// each topic's knowledge, and assembles the result into an
+// OpportunitySnapshot. Pure, no UI or network dependency - callable from a
+// page (as it is today) or a server route later without changing anything
+// here. Doesn't cover "what to do next" - see the recommendation domain.
 
 const STAGE_PHRASES: Record<string, string> = {
   "Just an idea": "at the idea stage",
@@ -29,18 +28,6 @@ function dedupe(items: string[]): string[] {
 
 function clean(value: string | undefined): string {
   return (value ?? "").trim().replace(/\.$/, "");
-}
-
-function buildContext(answers: InterviewAnswers): OpportunityContext {
-  return {
-    businessStage: clean(answers["business-stage"]),
-    industry: clean(answers["industry"]),
-    revenueModel: clean(answers["revenue-model"]),
-    marketType: clean(answers["market-type"]),
-    hasCustomer: Boolean(answers["who-affected"]?.trim()),
-    hasProblem: Boolean(answers["problem-solved"]?.trim()),
-    hasMarketSignal: Boolean(answers["market-signal"]?.trim()),
-  };
 }
 
 function buildFounderSummary(answers: InterviewAnswers, context: OpportunityContext): string[] {
@@ -74,7 +61,7 @@ function buildFounderSummary(answers: InterviewAnswers, context: OpportunityCont
 }
 
 export function buildOpportunitySnapshot(answers: InterviewAnswers): OpportunitySnapshot {
-  const context = buildContext(answers);
+  const context = buildOpportunityContext(answers);
 
   const strengths = evaluateRules(customerValidationStrengths, context);
 
@@ -83,8 +70,6 @@ export function buildOpportunitySnapshot(answers: InterviewAnswers): Opportunity
     ...evaluateRules(pricingWatchItems, context),
     ...alwaysWatchItems,
   ];
-
-  const nextSteps = [...evaluateRules(businessStageNextSteps, context), ...evaluateRules(revenueModelNextSteps, context)];
 
   return {
     founderSummary: buildFounderSummary(answers, context),
@@ -97,6 +82,5 @@ export function buildOpportunitySnapshot(answers: InterviewAnswers): Opportunity
     },
     strengths: dedupe(strengths),
     watchList: dedupe(watchList),
-    nextSteps: dedupe(nextSteps),
   };
 }
