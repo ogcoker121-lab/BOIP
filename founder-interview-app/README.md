@@ -1,9 +1,10 @@
 # Founder Discovery Interview
 
 A minimal Next.js app implementing the BOIP Founder Discovery Interview
-workflow: landing page -> 10-question interview -> review -> submit ->
-completion. Progress auto-saves and resumes across refreshes/return visits
-(v0.2).
+workflow: landing page -> 13-question interview -> review -> submit ->
+Opportunity Snapshot. Progress auto-saves and resumes across refreshes/return
+visits (v0.2). After submitting, the founder gets a structured, rule-based
+read on their idea - no AI, no "Thank you" page (v0.3).
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no recommendations, no reports.
@@ -36,17 +37,22 @@ falls back to the in-memory repository automatically.
 
 ## Structure
 
-- `data/questions.ts` - the 10 interview questions (data, not UI)
+- `data/questions.ts` - the 13 interview questions (data, not UI). Three
+  (industry, business-stage, revenue-model) are structured select fields
+  added in v0.3 specifically so the Opportunity Snapshot has real
+  categorical data to key rules off, rather than guessing from prose.
 - `types/interview.ts` - the `InterviewQuestion` shape
 - `components/interview/` - Interview, QuestionCard, ProgressBar,
-  NavigationButtons, ReviewAnswers, CompletionCard (presentational, no
-  state, no persistence)
+  NavigationButtons, ReviewAnswers (presentational, no state, no
+  persistence), plus the Opportunity Snapshot's FounderSummary,
+  OpportunityOverview, StrengthsList, WatchList, NextSteps, and the
+  OpportunitySnapshot component that composes them
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
 - `app/api/interview/` - the service layer: `POST /api/interview` (create),
   `GET /api/interview/:id` (resume), `PATCH /api/interview/:id` (save an
-  answer, or `{action: "submit"}`)
+  answer and/or the current question pointer, or `{action: "submit"}`)
 - `lib/interview-repository.ts` - the `InterviewRepository` interface, an
   in-memory implementation, and a factory that picks Supabase when
   configured
@@ -54,4 +60,10 @@ falls back to the in-memory repository automatically.
   (server-only)
 - `lib/interview-client.ts` - the browser-side fetch wrapper the Context
   uses; never touches the repository or Supabase directly
+- `lib/opportunity/rules.ts` - deterministic BOIP rules as data (next-step
+  recommendations, strength/watch-list signals) - no AI, no branching logic
+  in code, extend by adding rows
+- `lib/opportunity/opportunity-mapper.ts` - `buildOpportunitySnapshot()`, a
+  pure function (`InterviewAnswers -> OpportunitySnapshot`) independent of
+  the UI, callable from a page today or a server route later
 - `supabase/migrations/` - schema SQL
