@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { OpportunitySnapshot as OpportunitySnapshotData } from "@/types/opportunity";
+import { OpportunitySnapshot as OpportunitySnapshotData } from "@/src/domain/opportunity/snapshot-model";
 import FounderSummary from "./FounderSummary";
 import OpportunityOverview from "./OpportunityOverview";
 import StrengthsList from "./StrengthsList";

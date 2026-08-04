@@ -1,4 +1,4 @@
-import { OpportunityOverview as OpportunityOverviewData } from "@/types/opportunity";
+import { OpportunityOverview as OpportunityOverviewData } from "@/src/domain/opportunity/snapshot-model";
 
 interface OpportunityOverviewProps {
   overview: OpportunityOverviewData;
@@ -10,6 +10,7 @@ export default function OpportunityOverview({ overview }: OpportunityOverviewPro
     { label: "Industry", value: overview.industry },
     { label: "Customer", value: overview.customer },
     { label: "Revenue", value: overview.revenueModel },
+    { label: "Market", value: overview.marketType },
   ];
 
   return (
@@ -17,7 +18,7 @@ export default function OpportunityOverview({ overview }: OpportunityOverviewPro
       <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
         Opportunity Overview
       </h2>
-      <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
+      <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
         {rows.map((row) => (
           <div key={row.label}>
             <dt className="text-xs text-zinc-500 dark:text-zinc-400">{row.label}</dt>

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import OpportunitySnapshot from "@/components/interview/OpportunitySnapshot";
-import { buildOpportunitySnapshot } from "@/lib/opportunity/opportunity-mapper";
+import { buildOpportunitySnapshot } from "@/src/domain/opportunity/opportunity-mapper";
 import { useInterview } from "../hooks/useInterview";
 
 export default function InterviewCompletePage() {
