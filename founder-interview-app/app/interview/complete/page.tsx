@@ -1,4 +1,10 @@
-// Rendered by app/interview/layout.tsx - see that file for why.
+"use client";
+
+import CompletionCard from "@/components/interview/CompletionCard";
+import { useInterview } from "../hooks/useInterview";
+
 export default function InterviewCompletePage() {
-  return null;
+  const { reset } = useInterview();
+
+  return <CompletionCard onRestart={reset} />;
 }
