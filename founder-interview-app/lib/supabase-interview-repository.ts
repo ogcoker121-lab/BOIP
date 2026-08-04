@@ -1,10 +1,11 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { InterviewAnswers } from "@/types/interview";
-import { InterviewRecord, InterviewRepository, InterviewStatus } from "./interview-repository";
+import { InterviewProgressUpdate, InterviewRecord, InterviewRepository, InterviewStatus } from "./interview-repository";
 
 interface InterviewRow {
   id: string;
   status: InterviewStatus;
+  current_question_index: number;
   created_at: string;
   updated_at: string;
 }
@@ -66,19 +67,31 @@ export class SupabaseInterviewRepository implements InterviewRepository {
     return toInterviewRecord(interview, answers);
   }
 
-  async saveAnswer(id: string, questionId: string, answer: string): Promise<InterviewRecord | null> {
-    const { error: upsertError } = await this.client
-      .from("interview_answers")
-      .upsert(
-        { interview_id: id, question_id: questionId, answer, updated_at: new Date().toISOString() },
-        { onConflict: "interview_id,question_id" },
-      );
+  async saveProgress(id: string, update: InterviewProgressUpdate): Promise<InterviewRecord | null> {
+    if (update.questionId !== undefined && update.answer !== undefined) {
+      const { error: upsertError } = await this.client
+        .from("interview_answers")
+        .upsert(
+          { interview_id: id, question_id: update.questionId, answer: update.answer, updated_at: new Date().toISOString() },
+          { onConflict: "interview_id,question_id" },
+        );
 
-    if (upsertError) {
-      throw new Error(`Failed to save answer: ${upsertError.message}`);
+      if (upsertError) {
+        throw new Error(`Failed to save answer: ${upsertError.message}`);
+      }
     }
 
-    await this.client.from("interviews").update({ updated_at: new Date().toISOString() }).eq("id", id);
+    const interviewUpdate: { updated_at: string; current_question_index?: number } = {
+      updated_at: new Date().toISOString(),
+    };
+    if (update.currentQuestionIndex !== undefined) {
+      interviewUpdate.current_question_index = update.currentQuestionIndex;
+    }
+
+    const { error } = await this.client.from("interviews").update(interviewUpdate).eq("id", id);
+    if (error) {
+      throw new Error(`Failed to update interview: ${error.message}`);
+    }
 
     return this.getInterview(id);
   }
@@ -108,6 +121,7 @@ function toInterviewRecord(row: InterviewRow, answers: InterviewAnswers): Interv
   return {
     id: row.id,
     status: row.status,
+    currentQuestionIndex: row.current_question_index,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     answers,

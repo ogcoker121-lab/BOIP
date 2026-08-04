@@ -7,7 +7,8 @@ create table if not exists interviews (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  status text not null default 'in_progress' check (status in ('in_progress', 'submitted'))
+  status text not null default 'in_progress' check (status in ('in_progress', 'submitted')),
+  current_question_index integer not null default 0
 );
 
 create table if not exists interview_answers (

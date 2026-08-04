@@ -5,9 +5,20 @@ export type InterviewStatus = "in_progress" | "submitted";
 export interface InterviewRecord {
   id: string;
   status: InterviewStatus;
+  currentQuestionIndex: number;
   createdAt: string;
   updatedAt: string;
   answers: InterviewAnswers;
+}
+
+// Whatever changed since the last save - one or both of an answer and the
+// current question pointer. Kept as a single update rather than two
+// separate repository methods because the two always travel together over
+// the wire (see app/api/interview/[id]/route.ts).
+export interface InterviewProgressUpdate {
+  questionId?: string;
+  answer?: string;
+  currentQuestionIndex?: number;
 }
 
 // Server-side data access for the interview feature. The UI never talks to
@@ -16,7 +27,7 @@ export interface InterviewRecord {
 export interface InterviewRepository {
   createInterview(): Promise<InterviewRecord>;
   getInterview(id: string): Promise<InterviewRecord | null>;
-  saveAnswer(id: string, questionId: string, answer: string): Promise<InterviewRecord | null>;
+  saveProgress(id: string, update: InterviewProgressUpdate): Promise<InterviewRecord | null>;
   submitInterview(id: string): Promise<InterviewRecord | null>;
 }
 
@@ -37,6 +48,7 @@ export class InMemoryInterviewRepository implements InterviewRepository {
     const record: InterviewRecord = {
       id: randomId(),
       status: "in_progress",
+      currentQuestionIndex: 0,
       createdAt: now,
       updatedAt: now,
       answers: {},
@@ -49,10 +61,16 @@ export class InMemoryInterviewRepository implements InterviewRepository {
     return this.interviews.get(id) ?? null;
   }
 
-  async saveAnswer(id: string, questionId: string, answer: string): Promise<InterviewRecord | null> {
+  async saveProgress(id: string, update: InterviewProgressUpdate): Promise<InterviewRecord | null> {
     const record = this.interviews.get(id);
     if (!record) return null;
-    record.answers = { ...record.answers, [questionId]: answer };
+
+    if (update.questionId !== undefined && update.answer !== undefined) {
+      record.answers = { ...record.answers, [update.questionId]: update.answer };
+    }
+    if (update.currentQuestionIndex !== undefined) {
+      record.currentQuestionIndex = update.currentQuestionIndex;
+    }
     record.updatedAt = new Date().toISOString();
     return record;
   }

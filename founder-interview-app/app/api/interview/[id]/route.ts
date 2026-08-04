@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getInterviewRepository } from "@/lib/interview-repository";
+import { InterviewProgressUpdate, getInterviewRepository } from "@/lib/interview-repository";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,10 +20,19 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   let interview;
   if (body?.action === "submit") {
     interview = await repository.submitInterview(id);
-  } else if (typeof body?.questionId === "string" && typeof body?.answer === "string") {
-    interview = await repository.saveAnswer(id, body.questionId, body.answer);
   } else {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    const update: InterviewProgressUpdate = {};
+    if (typeof body?.questionId === "string" && typeof body?.answer === "string") {
+      update.questionId = body.questionId;
+      update.answer = body.answer;
+    }
+    if (typeof body?.currentQuestionIndex === "number") {
+      update.currentQuestionIndex = body.currentQuestionIndex;
+    }
+    if (Object.keys(update).length === 0) {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+    interview = await repository.saveProgress(id, update);
   }
 
   if (!interview) {

@@ -1,11 +1,12 @@
 import { InterviewAnswers } from "@/types/interview";
-import { InterviewStatus } from "./interview-repository";
+import { InterviewProgressUpdate, InterviewStatus } from "./interview-repository";
 
 // Browser-side wrapper around app/api/interview/*. The interview UI only
 // ever talks to this - it never imports the repository or Supabase directly.
 export interface InterviewDTO {
   id: string;
   status: InterviewStatus;
+  currentQuestionIndex: number;
   createdAt: string;
   updatedAt: string;
   answers: InterviewAnswers;
@@ -28,14 +29,14 @@ export async function fetchInterview(id: string): Promise<InterviewDTO | null> {
   return response.json();
 }
 
-export async function saveInterviewAnswer(id: string, questionId: string, answer: string): Promise<InterviewDTO> {
+export async function saveInterviewProgress(id: string, update: InterviewProgressUpdate): Promise<InterviewDTO> {
   const response = await fetch(`/api/interview/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ questionId, answer }),
+    body: JSON.stringify(update),
   });
   if (!response.ok) {
-    throw new Error(`Failed to save answer (${response.status})`);
+    throw new Error(`Failed to save interview progress (${response.status})`);
   }
   return response.json();
 }

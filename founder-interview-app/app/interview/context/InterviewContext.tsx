@@ -1,12 +1,12 @@
 "use client";
 
-import { ReactNode, createContext, useEffect, useRef, useState } from "react";
+import { ReactNode, createContext, useRef, useState, useEffect } from "react";
 import { questions } from "@/data/questions";
 import { InterviewAnswers, InterviewQuestion } from "@/types/interview";
 import {
   createInterview,
   fetchInterview,
-  saveInterviewAnswer,
+  saveInterviewProgress,
   submitInterview as submitInterviewRequest,
 } from "@/lib/interview-client";
 
@@ -18,10 +18,11 @@ const SAVE_DEBOUNCE_MS = 500;
 // app/interview/*, and it must not grow beyond what the wizard needs.
 //
 // Persistence (v0.2): on mount, restores an unfinished interview from
-// localStorage + the API if one exists, otherwise starts a new one.
-// Answers auto-save (debounced, flushed on navigation) via
-// lib/interview-client.ts. None of this changes the shape below, so no
-// page or component needs to change.
+// localStorage + the API if one exists, at the exact question it left off
+// on (server-stored current_question_index, not inferred). An interview
+// isn't created until the founder enters their first answer - visiting
+// /interview and leaving creates nothing. None of this changes the shape
+// below, so no page or component needs to change.
 export interface InterviewContextValue {
   questions: InterviewQuestion[];
   answers: InterviewAnswers;
@@ -41,11 +42,6 @@ export interface InterviewContextValue {
 
 export const InterviewContext = createContext<InterviewContextValue | null>(null);
 
-function firstUnansweredIndex(answers: InterviewAnswers): number {
-  const index = questions.findIndex((question) => !answers[question.id]?.trim());
-  return index === -1 ? questions.length - 1 : index;
-}
-
 export function InterviewProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [answers, setAnswers] = useState<InterviewAnswers>({});
@@ -54,37 +50,35 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<"in_progress" | "submitted">("in_progress");
 
   const interviewIdRef = useRef<string | null>(null);
+  const creatingRef = useRef<Promise<string | null> | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pendingSaveRef = useRef<{ questionId: string; value: string } | null>(null);
+  const pendingAnswerRef = useRef<{ questionId: string; value: string } | null>(null);
 
-  // Restore an unfinished interview, or start a new one.
+  // Restore an unfinished interview if one exists. Does NOT create one -
+  // creation is lazy, triggered by the first answer (see ensureInterview).
   useEffect(() => {
     let cancelled = false;
 
     async function init() {
       const storedId = window.localStorage.getItem(STORAGE_KEY);
+      if (!storedId) {
+        setReady(true);
+        return;
+      }
 
       try {
-        if (storedId) {
-          const existing = await fetchInterview(storedId);
-          if (existing && existing.status === "in_progress") {
-            if (cancelled) return;
-            interviewIdRef.current = existing.id;
-            setAnswers(existing.answers);
-            setCurrentIndex(firstUnansweredIndex(existing.answers));
-            return;
-          }
+        const existing = await fetchInterview(storedId);
+        if (cancelled) return;
+
+        if (existing && existing.status === "in_progress") {
+          interviewIdRef.current = existing.id;
+          setAnswers(existing.answers);
+          setCurrentIndex(Math.min(existing.currentQuestionIndex, questions.length - 1));
+        } else {
           window.localStorage.removeItem(STORAGE_KEY);
         }
-
-        const created = await createInterview();
-        if (cancelled) return;
-        interviewIdRef.current = created.id;
-        window.localStorage.setItem(STORAGE_KEY, created.id);
       } catch (err) {
-        // Persistence unavailable this session (offline, API error, etc.) -
-        // the interview still works locally, it just won't save.
-        console.error("Failed to initialize interview persistence", err);
+        console.error("Failed to restore interview", err);
       } finally {
         if (!cancelled) setReady(true);
       }
@@ -96,19 +90,66 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const flushPendingSave = () => {
+  // Lazily creates the interview on first use, deduping concurrent callers.
+  const ensureInterview = async (): Promise<string | null> => {
+    if (interviewIdRef.current) return interviewIdRef.current;
+    if (creatingRef.current) return creatingRef.current;
+
+    const promise = createInterview()
+      .then((created) => {
+        interviewIdRef.current = created.id;
+        window.localStorage.setItem(STORAGE_KEY, created.id);
+        return created.id;
+      })
+      .catch((err) => {
+        console.error("Failed to create interview", err);
+        return null;
+      })
+      .finally(() => {
+        creatingRef.current = null;
+      });
+
+    creatingRef.current = promise;
+    return promise;
+  };
+
+  // Persists whatever changed. Won't create an interview just to record a
+  // navigation event with no answer - only an actual answer justifies that.
+  const persistProgress = async (update: { questionId?: string; answer?: string; currentQuestionIndex?: number }) => {
+    const hasAnswer = update.questionId !== undefined && update.answer !== undefined;
+    let interviewId = interviewIdRef.current;
+
+    if (!interviewId) {
+      if (!hasAnswer) return;
+      interviewId = await ensureInterview();
+      if (!interviewId) return;
+    }
+
+    saveInterviewProgress(interviewId, update).catch((err) => {
+      console.error("Failed to save interview progress", err);
+    });
+  };
+
+  const flushPendingSave = (nextIndex?: number) => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = null;
     }
-    const pending = pendingSaveRef.current;
-    const interviewId = interviewIdRef.current;
-    if (pending && interviewId) {
-      pendingSaveRef.current = null;
-      saveInterviewAnswer(interviewId, pending.questionId, pending.value).catch((err) => {
-        console.error("Failed to save answer", err);
-      });
+
+    const pending = pendingAnswerRef.current;
+    pendingAnswerRef.current = null;
+
+    const update: { questionId?: string; answer?: string; currentQuestionIndex?: number } = {};
+    if (pending) {
+      update.questionId = pending.questionId;
+      update.answer = pending.value;
     }
+    if (nextIndex !== undefined) {
+      update.currentQuestionIndex = nextIndex;
+    }
+    if (Object.keys(update).length === 0) return;
+
+    void persistProgress(update);
   };
 
   const currentQuestion = questions[currentIndex];
@@ -119,9 +160,9 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
     setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }));
     if (error) setError(undefined);
 
-    pendingSaveRef.current = { questionId: currentQuestion.id, value };
+    pendingAnswerRef.current = { questionId: currentQuestion.id, value };
     if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(flushPendingSave, SAVE_DEBOUNCE_MS);
+    saveTimeoutRef.current = setTimeout(() => flushPendingSave(), SAVE_DEBOUNCE_MS);
   };
 
   const next = (): boolean => {
@@ -131,22 +172,27 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
       return false;
     }
     setError(undefined);
-    flushPendingSave();
-    if (!isLastQuestion) {
-      setCurrentIndex((index) => index + 1);
+
+    if (isLastQuestion) {
+      flushPendingSave();
+    } else {
+      const nextIndex = currentIndex + 1;
+      flushPendingSave(nextIndex);
+      setCurrentIndex(nextIndex);
     }
     return true;
   };
 
   const previous = () => {
     setError(undefined);
-    flushPendingSave();
-    setCurrentIndex((index) => Math.max(0, index - 1));
+    const prevIndex = Math.max(0, currentIndex - 1);
+    flushPendingSave(prevIndex);
+    setCurrentIndex(prevIndex);
   };
 
   const goToQuestion = (index: number) => {
     setError(undefined);
-    flushPendingSave();
+    flushPendingSave(index);
     setCurrentIndex(index);
   };
 
