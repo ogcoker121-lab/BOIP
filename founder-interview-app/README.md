@@ -1,7 +1,7 @@
 # Founder Discovery Interview
 
 A minimal Next.js app implementing the BOIP Founder Discovery Interview
-workflow: landing page -> 13-question interview -> review -> submit ->
+workflow: landing page -> 14-question interview -> review -> submit ->
 Opportunity Snapshot. Progress auto-saves and resumes across refreshes/return
 visits (v0.2). After submitting, the founder gets a structured, rule-based
 read on their idea - no AI, no "Thank you" page (v0.3).
@@ -37,10 +37,10 @@ falls back to the in-memory repository automatically.
 
 ## Structure
 
-- `data/questions.ts` - the 13 interview questions (data, not UI). Three
-  (industry, business-stage, revenue-model) are structured select fields
-  added in v0.3 specifically so the Opportunity Snapshot has real
-  categorical data to key rules off, rather than guessing from prose.
+- `data/questions.ts` - the 14 interview questions (data, not UI). Four
+  (industry, business-stage, revenue-model, market-type) are structured
+  select fields added in v0.3 specifically so the Opportunity Snapshot has
+  real categorical data to key rules off, rather than guessing from prose.
 - `types/interview.ts` - the `InterviewQuestion` shape
 - `components/interview/` - Interview, QuestionCard, ProgressBar,
   NavigationButtons, ReviewAnswers (presentational, no state, no
@@ -60,10 +60,19 @@ falls back to the in-memory repository automatically.
   (server-only)
 - `lib/interview-client.ts` - the browser-side fetch wrapper the Context
   uses; never touches the repository or Supabase directly
-- `lib/opportunity/rules.ts` - deterministic BOIP rules as data (next-step
-  recommendations, strength/watch-list signals) - no AI, no branching logic
-  in code, extend by adding rows
-- `lib/opportunity/opportunity-mapper.ts` - `buildOpportunitySnapshot()`, a
-  pure function (`InterviewAnswers -> OpportunitySnapshot`) independent of
-  the UI, callable from a page today or a server route later
+- `src/domain/opportunity/` - the Opportunity Snapshot's domain layer,
+  separate from the interview feature and the UI:
+  - `rule-engine.ts` - generic `Rule<Context, Result>` + `evaluateRules()`,
+    knows nothing about interviews or opportunities specifically
+  - `context.ts` - `OpportunityContext`, the shape every rule evaluates
+    against
+  - `rules/business-stage.ts`, `rules/revenue-model.ts`,
+    `rules/customer-validation.ts`, `rules/pricing.ts` - the actual
+    deterministic mappings, as data. Add a row to change behavior; the
+    mapper and rule engine never need to change.
+  - `snapshot-model.ts` - the `OpportunitySnapshot` / `OpportunityOverview`
+    shapes
+  - `opportunity-mapper.ts` - `buildOpportunitySnapshot()`, a pure function
+    (`InterviewAnswers -> OpportunitySnapshot`) independent of the UI,
+    callable from a page today or a server route later
 - `supabase/migrations/` - schema SQL

@@ -9,17 +9,23 @@ All notable changes to BOIP are documented in this file.
 - Opportunity Snapshot: replaces the "Thank you" completion screen with a
   structured, rule-based read on the founder's idea - Founder Summary,
   Opportunity Overview, Strengths, Watch List, Recommended Next Steps
-- Three new structured interview questions (industry, business stage,
-  revenue model) so the snapshot has real categorical data to key off
+- Four new structured interview questions (industry, business stage,
+  revenue model, market type) so the snapshot has real categorical data to
+  key off
 - `OpportunityMapper` (`buildOpportunitySnapshot`), a pure function
   independent of the UI
-- Deterministic rules as data (`lib/opportunity/rules.ts`) - no AI, no LLM
-  calls; the same answers always produce the same snapshot
+- Generic rule engine (`Rule<Context, Result>` + `evaluateRules`) plus
+  deterministic BOIP rules as data, split by topic (business stage, revenue
+  model, customer validation, pricing) - no AI, no LLM calls; the same
+  answers always produce the same snapshot
 
 ### Architecture
 
-- Rules live as data, not branching code - extend the rule tables to add
-  behavior, not the mapper itself
+- New domain layer, `src/domain/opportunity/`, separate from both the
+  interview feature and the UI - `Interview -> Interview Service ->
+  Opportunity Mapper -> Rule Engine -> Snapshot Model -> UI`
+- Rules live as data, not branching code, one file per concern - extend a
+  rule table to add behavior, not the mapper or rule engine
 - Mapper has no UI dependency and no network calls, so it's callable from a
   server route later (e.g. to persist a snapshot) without changing it
 
@@ -35,7 +41,7 @@ All notable changes to BOIP are documented in this file.
 
 ### Changed
 
-- Interview grew from 10 to 13 questions
+- Interview grew from 10 to 14 questions
 - The interview's final screen is now the Opportunity Snapshot, not a
   completion message
 
