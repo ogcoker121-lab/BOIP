@@ -66,10 +66,14 @@ falls back to the in-memory repository automatically.
     knows nothing about interviews or opportunities specifically
   - `context.ts` - `OpportunityContext`, the shape every rule evaluates
     against
-  - `rules/business-stage.ts`, `rules/revenue-model.ts`,
-    `rules/customer-validation.ts`, `rules/pricing.ts` - the actual
-    deterministic mappings, as data. Add a row to change behavior; the
-    mapper and rule engine never need to change.
+  - `knowledge/business-stage.ts`, `knowledge/revenue-model.ts`,
+    `knowledge/customer-validation.ts`, `knowledge/pricing.ts` - the actual
+    deterministic mappings, as data. Named `knowledge/` rather than
+    `rules/` since not everything BOIP evaluates will be a simple
+    condition -> outcome rule forever; the directory should be able to
+    grow to hold heuristics, thresholds, and mappings without a rename.
+    Add a row to change behavior; the mapper and rule engine never need
+    to change.
   - `snapshot-model.ts` - the `OpportunitySnapshot` / `OpportunityOverview`
     shapes
   - `opportunity-mapper.ts` - `buildOpportunitySnapshot()`, a pure function

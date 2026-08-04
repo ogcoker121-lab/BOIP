@@ -2,10 +2,10 @@ import { InterviewAnswers } from "@/types/interview";
 import { evaluateRules } from "./rule-engine";
 import { OpportunityContext } from "./context";
 import { OpportunitySnapshot } from "./snapshot-model";
-import { businessStageNextSteps } from "./rules/business-stage";
-import { revenueModelNextSteps } from "./rules/revenue-model";
-import { alwaysWatchItems, customerValidationStrengths, customerValidationWatchItems } from "./rules/customer-validation";
-import { pricingWatchItems } from "./rules/pricing";
+import { businessStageNextSteps } from "./knowledge/business-stage";
+import { revenueModelNextSteps } from "./knowledge/revenue-model";
+import { alwaysWatchItems, customerValidationStrengths, customerValidationWatchItems } from "./knowledge/customer-validation";
+import { pricingWatchItems } from "./knowledge/pricing";
 
 // Interview -> Interview Service -> Opportunity Mapper -> Rule Engine ->
 // Snapshot Model -> UI. This file is the mapper: it turns raw interview
