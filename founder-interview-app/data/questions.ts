@@ -83,6 +83,18 @@ export const questions: InterviewQuestion[] = [
     ],
   },
   {
+    id: "market-type",
+    question: "Who is the business primarily selling to?",
+    type: "select",
+    required: true,
+    options: [
+      "Consumers (B2C)",
+      "Small and medium businesses (SME)",
+      "Enterprise / large organisations",
+      "Mixed / not sure yet",
+    ],
+  },
+  {
     id: "market-signal",
     question: "What evidence have you seen that demand for this exists?",
     description: "Optional. Conversations, existing competitors, personal experience, anything.",
