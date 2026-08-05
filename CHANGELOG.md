@@ -2,6 +2,72 @@
 
 All notable changes to BOIP are documented in this file.
 
+## v0.9.0 (pending release)
+
+### Added
+
+- Business Plan Generator: a founder who completes the interview now
+  gets a complete, deterministic Business Plan - Executive Summary,
+  Business Opportunity, Target Customer, Revenue Model, Go-to-Market
+  Strategy, First 90-Day Action Plan, Key Risks, and Recommended
+  Frameworks - assembled entirely from BOIP's existing knowledge. No
+  AI, no LLMs, no text generation APIs, nothing invented
+- `app/interview/business-plan/` - the plan page, reachable via a new
+  "View Full Business Plan" link on the Opportunity Snapshot
+- Every section that references a framework links "Learn More" to its
+  existing Framework Explorer page (v0.8), resolved through the
+  Knowledge Catalog (v0.7) - framework guidance is never duplicated
+
+### Architecture
+
+- New domain, `src/domain/business-plan/` (`models/`, `templates/`,
+  `sections/`, `builders/`, `mapper/`) - assembles a plan from the
+  Interview, Opportunity, Decision, Recommendations, and Knowledge
+  Catalog; never recomputes anything those domains already computed
+- `templates/`: one reusable, parameterized text-rendering function per
+  section - no component or section builder holds a hard-coded
+  paragraph. Every template only assembles text that already exists
+  (the Opportunity Snapshot's founderSummary, the Decision's
+  explanation, CustomerContext, matched-opportunity fields)
+- `sections/`: one builder per section, each deriving its framework
+  references from whichever recommendations/opportunity actually
+  applied - never hardcoded ids
+- New `src/domain/opportunity/customer-context.ts` - `CustomerContext`
+  (customer, problem, marketSignal) + `buildCustomerContext()`. Target
+  Customer consumes this instead of reading interview answers directly,
+  so the domain follows Interview -> Opportunity -> Business Plan;
+  `buildBusinessPlan()`'s mapper is the only place in the domain that
+  touches `InterviewAnswers`
+- New domain, `src/domain/roadmap/` (`models/`, `builders/`) -
+  `buildRoadmap()` buckets the recommendation engine's own priority
+  ordering (Critical/High -> Days 1-30, Medium -> Days 31-60, Low ->
+  Days 61-90) into a reusable `Roadmap`, extracted out of Business Plan
+  so a future Founder Report, Executive Dashboard, mobile app, or AI
+  Coach can reuse the same roadmap without rebuilding it
+- `mapper/business-plan-mapper.ts`'s `buildBusinessPlan()` reuses
+  `buildOpportunitySnapshot()` (v0.3) and `buildDecisionWithTrace()`
+  (v0.6) exactly as every other consumer does
+- `BusinessPlan.id` (`BP-xxx`) is a runtime id, not part of the
+  permanent ontology - same convention as Decision's `DEC-xxx`, since a
+  plan is recomputed fresh from the same deterministic inputs and never
+  persisted or hand-edited
+
+### Excluded
+
+- AI, PDF export, DOCX export, email, payments, Founder Report,
+  analytics
+- Persisting Business Plans
+
+### Changed
+
+- Opportunity Snapshot: added a "View Full Business Plan" link
+  alongside "Back to home" - the Next Move card's own primary action
+  (v0.5) is unchanged
+
+### Fixed
+
+- N/A
+
 ## v0.8.0 (pending release)
 
 ### Added
