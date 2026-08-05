@@ -80,7 +80,79 @@ export default async function FrameworkExplorerPage({ params }: { params: Promis
         </div>
       )}
 
-      <Link href="/" className="mt-10 inline-block text-sm font-medium text-zinc-900 underline dark:text-zinc-50">
+      {(page.relatedCapability || page.leadsTo || page.usedBy.length > 0) && (
+        <div className="mt-8 rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Capability
+          </h2>
+          <dl className="mt-2 space-y-2 text-sm">
+            <div>
+              <dt className="text-xs text-zinc-500 dark:text-zinc-400">Capability</dt>
+              <dd className="font-medium text-zinc-900 dark:text-zinc-50">{page.capability}</dd>
+            </div>
+            {page.relatedCapability && (
+              <div>
+                <dt className="text-xs text-zinc-500 dark:text-zinc-400">Related capability</dt>
+                <dd className="font-medium text-zinc-900 dark:text-zinc-50">{page.relatedCapability}</dd>
+              </div>
+            )}
+            {page.usedBy.length > 0 && (
+              <div>
+                <dt className="text-xs text-zinc-500 dark:text-zinc-400">Used by</dt>
+                <dd className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+                  {page.usedBy.map((reference) => (
+                    <span key={reference.id} className="font-medium text-zinc-900 dark:text-zinc-50">
+                      {reference.title}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+            {page.leadsTo && (
+              <div>
+                <dt className="text-xs text-zinc-500 dark:text-zinc-400">Leads to</dt>
+                <dd className="font-medium text-zinc-900 dark:text-zinc-50">{page.leadsTo}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      )}
+
+      {page.relatedFrameworks.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Related frameworks
+          </h2>
+          <ul className="mt-2 space-y-1.5">
+            {page.relatedFrameworks.map((framework) => (
+              <li key={framework.id}>
+                <Link
+                  href={`/frameworks/${framework.id}`}
+                  className="text-sm font-medium text-zinc-900 underline-offset-2 hover:underline dark:text-zinc-50"
+                >
+                  {framework.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {page.nextRecommendedFramework && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Recommended next framework
+          </h2>
+          <Link
+            href={`/frameworks/${page.nextRecommendedFramework.id}`}
+            className="mt-2 inline-flex items-center justify-center rounded-md bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          >
+            Explore {page.nextRecommendedFramework.title}
+          </Link>
+        </div>
+      )}
+
+      <Link href="/" className="mt-10 block text-sm font-medium text-zinc-900 underline dark:text-zinc-50">
         Back to home
       </Link>
     </main>
