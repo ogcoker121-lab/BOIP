@@ -131,9 +131,14 @@ falls back to the in-memory repository automatically.
 - `src/domain/decision/` - explains what every other domain already
   decided; never recomputes or overrides route, opportunities, scores, or
   recommendations:
-  - `models/decision.ts` - `Decision`, `Signal`, `Evaluation`,
-    `Explanation`. `Decision.id` (`DEC-xxx`) is a runtime id, not part of
-    the permanent ontology - a Decision is recomputed fresh per
+  - `models/decision.ts` - `Decision` (UI-facing: id, route,
+    opportunities, recommendations, explanation) and `DecisionTrace`
+    (everything else: signals, full evaluations, and two convenience
+    id-only indices - `matchedRules` (`RULE-xxx`) and
+    `firedRecommendations` (`REC-xxx`) - for report/AI/developer
+    consumers that want to walk id -> id relationships without
+    re-deriving them). `Decision.id` (`DEC-xxx`) is a runtime id, not
+    part of the permanent ontology - a Decision is recomputed fresh per
     evaluation and never persisted
   - `models/signals.ts` - `buildSignals()`: a human-readable view of the
     interview answers that actually fed a decision (e.g. "Risk Tolerance
@@ -147,6 +152,7 @@ falls back to the in-memory repository automatically.
     "Why BOIP recommended this" entirely from matched evaluations - no
     AI, no prompts, every bullet reuses a reason string that already
     existed elsewhere
-  - `mapper/decision-mapper.ts` - `buildDecision()`, pure, ties signals,
-    evaluations, and the existing engines' output into one `Decision`
+  - `mapper/decision-mapper.ts` - `buildDecisionWithTrace()`, pure,
+    computes `{ decision, trace }` together; `buildDecision()` is a thin
+    wrapper returning just `Decision`, the UI's only need
 - `supabase/migrations/` - schema SQL
