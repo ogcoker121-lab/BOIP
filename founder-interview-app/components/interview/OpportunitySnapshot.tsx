@@ -49,13 +49,21 @@ export default function OpportunitySnapshot({
         <RecommendedActions recommendations={recommendations} />
       </div>
 
-      <Link
-        href="/"
-        onClick={onRestart}
-        className="mt-8 inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-      >
-        Back to home
-      </Link>
+      <div className="mt-8 flex flex-wrap items-center gap-3">
+        <Link
+          href="/"
+          onClick={onRestart}
+          className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        >
+          Back to home
+        </Link>
+        <Link
+          href="/interview/business-plan"
+          className="inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+        >
+          View Full Business Plan
+        </Link>
+      </div>
     </div>
   );
 }
