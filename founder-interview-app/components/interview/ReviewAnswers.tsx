@@ -30,6 +30,7 @@ export default function ReviewAnswers({ questions, answers, onEdit, onBack, onSu
               <button
                 type="button"
                 onClick={() => onEdit(index)}
+                aria-label={`Edit: ${question.question}`}
                 className="shrink-0 text-sm font-medium text-zinc-600 underline-offset-2 hover:underline dark:text-zinc-400"
               >
                 Edit

@@ -59,6 +59,7 @@ export default function RecommendationCard({ recommendation }: RecommendationCar
               {framework.name}{" "}
               <Link
                 href={`/frameworks/${framework.id}`}
+                aria-label={`Learn more about ${framework.name}`}
                 className="font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
               >
                 Learn More

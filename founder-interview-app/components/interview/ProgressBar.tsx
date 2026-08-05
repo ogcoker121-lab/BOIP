@@ -14,7 +14,14 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
         </span>
         <span>{percent}%</span>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+      <div
+        role="progressbar"
+        aria-valuenow={current}
+        aria-valuemin={1}
+        aria-valuemax={total}
+        aria-valuetext={`Question ${current} of ${total}`}
+        className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800"
+      >
         <div
           className="h-full rounded-full bg-zinc-900 transition-all dark:bg-zinc-50"
           style={{ width: `${percent}%` }}
