@@ -2,6 +2,59 @@
 
 All notable changes to BOIP are documented in this file.
 
+## v0.8.0 (pending release)
+
+### Added
+
+- Framework Explorer: BOIP's first Learning Capability. Every
+  Recommendation Card links "Learn More" through to a framework's own
+  page - what it is, why BOIP recommended it, when to use it, expected
+  outcome, common mistakes, related frameworks, and a recommended next
+  framework. Not a business plan generator, not AI - deterministic,
+  built entirely from the Knowledge Catalog
+- Capability navigation: every framework page also shows its
+  capability, a related capability, which recommendations/opportunities
+  use it, and what it leads to - exposing relationships the catalog
+  already holds, not a new engine
+- `resolveRelationshipsTargeting(id)` on the Knowledge Catalog: the one
+  reverse lookup needed to answer "what references this id" - still
+  flat id-based filtering, not a graph
+
+### Architecture
+
+- New domain, `src/domain/framework-explorer/` (`models/`,
+  `knowledge/`, `resolver/`) - resolves everything exclusively through
+  the Knowledge Catalog (`resolveCatalogEntry`/`resolveCatalogEntries`/
+  `resolveRelationshipsTargeting`); the recommendation, opportunity,
+  and rule domains are never imported directly
+- `framework-guidance.ts`: hand-authored, deterministic
+  whenToUse/expectedOutcome/commonMistakes per `FW-xxx` - the same kind
+  of knowledge as `frameworkRegistry` itself, keyed to the catalog's
+  existing ids rather than minting new identity
+- "Related frameworks" are derived structurally: two frameworks are
+  related if some Recommendation or Opportunity's own declared `USES`
+  relationship references both - never a name or category guess
+- First real catalog consumer: the Framework Explorer is what v0.7's
+  Knowledge Catalog was built for. `framework/registry.ts` and every
+  other existing consumer are untouched - migrating them is still a
+  deliberate, separate, later step
+
+### Excluded
+
+- AI-generated explanations, business plan generation, payments,
+  authentication, analytics, search, knowledge graph visualisation
+- `RECOMMENDS`/`RECOMMENDED_BY` (`OPP-xxx` <-> `REC-xxx`) relationships
+  remain unpopulated (a v0.7 limitation, unchanged here)
+
+### Changed
+
+- Recommendation cards: each referenced framework now shows a "Learn
+  More" link to its Explorer page, alongside the existing resolved name
+
+### Fixed
+
+- N/A
+
 ## v0.7.0 (pending release)
 
 ### Added
