@@ -2,7 +2,60 @@
 
 All notable changes to BOIP are documented in this file.
 
-## v0.5.0 (pending release)
+## v0.6.0 (pending release)
+
+### Added
+
+- Decision Engine: a deterministic object (`Decision`) that ties every
+  existing engine's output together and explains why BOIP reached its
+  conclusions - it does not change any recommendation, route, match, or
+  score, it only explains them
+- `Signal` extraction: a human-readable view of which interview answers
+  actually fed a decision (e.g. "Risk Tolerance = High"), traced back to
+  the source question id
+- `Evaluation` tracing: every knowledge rule - matched or not - is
+  recorded with its permanent id, weight, and reason, via a new
+  `evaluateRulesWithTrace()` on the shared engine
+- Permanent `RULE-xxx` registry: every existing knowledge row (route
+  weights, opportunity signals, recommendations) now has a stable id,
+  the same never-renumbered/never-reused convention as
+  `REC-xxx`/`FW-xxx`/`OPP-xxx`
+- Explanation generator: "Why BOIP recommended this" is generated
+  entirely from matched evaluations - no AI, no prompts, no new prose;
+  every bullet reuses a reason string that already existed elsewhere in
+  the app
+- UI: an optional, collapsed-by-default "Why BOIP recommended this"
+  section on the Next Move card
+
+### Architecture
+
+- New domain, `src/domain/decision/` (`models/`, `engine/`, `mapper/`,
+  `trace/`), separate from every domain it explains - it reads their
+  output, never recomputes or overrides it
+- `Decision` is a computed object, not persisted - its `id` (`DEC-xxx`)
+  is a runtime id, not part of the permanent ontology, since a Decision
+  is recomputed fresh every time an interview is evaluated
+- BOIP's mental model shifts from a linear pipeline to an evaluation
+  graph: Interview Signals -> Knowledge Evaluation -> Decision ->
+  (Recommendations, Opportunity Matches) -> Framework References ->
+  Presentation
+
+### Excluded
+
+- AI / LLM-generated explanations
+- Persisting Decisions
+- Any change to recommendation logic, opportunity matching, scores, or
+  interview questions
+
+### Changed
+
+- N/A
+
+### Fixed
+
+- N/A
+
+## v0.5.0
 
 ### Added
 

@@ -5,8 +5,11 @@ workflow: landing page -> 19-question interview -> review -> submit ->
 Opportunity Snapshot with a personalised Next Move. Progress auto-saves and
 resumes across refreshes/return visits (v0.2). After submitting, the founder
 gets a structured, rule-based read on their idea (v0.3), ordered concrete
-next actions (v0.4), and a named business/side-hustle/job/hybrid/skill-path
-recommendation with one clickable next step (v0.5) - no AI anywhere.
+next actions (v0.4), a named business/side-hustle/job/hybrid/skill-path
+recommendation with one clickable next step (v0.5), and an optional "Why
+BOIP recommended this" explanation tracing that recommendation back to the
+interview answers and knowledge rules that produced it (v0.6) - no AI
+anywhere.
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -51,8 +54,9 @@ falls back to the in-memory repository automatically.
   NavigationButtons, ReviewAnswers (presentational, no state, no
   persistence), the Opportunity Snapshot's FounderSummary,
   OpportunityOverview, StrengthsList, WatchList, RecommendedActions /
-  RecommendationCard, TopOpportunities / OpportunityCard, NextMoveCard, and
-  the OpportunitySnapshot component that composes all of them
+  RecommendationCard, TopOpportunities / OpportunityCard, NextMoveCard
+  (now with an optional, collapsed-by-default WhyBoipRecommended section),
+  and the OpportunitySnapshot component that composes all of them
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
@@ -73,9 +77,12 @@ falls back to the in-memory repository automatically.
 - `lib/interview-client.ts` - the browser-side fetch wrapper the Context
   uses; never touches the repository or Supabase directly
 - `src/domain/shared/` - the one generic evaluation engine
-  (`rule-engine.ts`: `Rule<Context, Result>` + `evaluateRules()`) and
-  `NextMoveType`, both shared across domains so none of them depend on each
-  other for these
+  (`rule-engine.ts`: `Rule<Context, Result>` + `evaluateRules()`, plus
+  `evaluateRulesWithTrace()` for the decision domain) and `NextMoveType`,
+  both shared across domains so none of them depend on each other for
+  these. Every `Rule` now carries a permanent `RULE-xxx` id - the same
+  convention as `REC-xxx`/`FW-xxx`/`OPP-xxx` - assigned once in its
+  knowledge file, never renumbered or reused
 - `src/domain/framework/registry.ts` - resolves `FW-xxx` to
   `{name, summary, whyItMatters}`. A founder never sees a raw framework id;
   wherever one is referenced (recommendation cards, opportunity plan pages)
@@ -121,4 +128,25 @@ falls back to the in-memory repository automatically.
   - `engine/recommendation-engine.ts` - the shared engine plus
     deterministic sorting (priority, then impact, then effort)
   - `mapper/recommendation-mapper.ts` - `buildRecommendations()`, pure
+- `src/domain/decision/` - explains what every other domain already
+  decided; never recomputes or overrides route, opportunities, scores, or
+  recommendations:
+  - `models/decision.ts` - `Decision`, `Signal`, `Evaluation`,
+    `Explanation`. `Decision.id` (`DEC-xxx`) is a runtime id, not part of
+    the permanent ontology - a Decision is recomputed fresh per
+    evaluation and never persisted
+  - `models/signals.ts` - `buildSignals()`: a human-readable view of the
+    interview answers that actually fed a decision (e.g. "Risk Tolerance
+    = High"), traced back to the source question id
+  - `engine/decision-engine.ts` - `buildEvaluations()`: re-evaluates the
+    same route/opportunity/recommendation knowledge via
+    `evaluateRulesWithTrace()` (shared engine) to record which `RULE-xxx`
+    rows matched and why - matched and unmatched rows both kept, for
+    genuine auditability
+  - `trace/explanation-generator.ts` - `buildExplanation()`: generates
+    "Why BOIP recommended this" entirely from matched evaluations - no
+    AI, no prompts, every bullet reuses a reason string that already
+    existed elsewhere
+  - `mapper/decision-mapper.ts` - `buildDecision()`, pure, ties signals,
+    evaluations, and the existing engines' output into one `Decision`
 - `supabase/migrations/` - schema SQL
