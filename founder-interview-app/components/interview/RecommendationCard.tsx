@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
 import { resolveFrameworks } from "@/src/domain/framework/registry";
 
@@ -52,9 +53,19 @@ export default function RecommendationCard({ recommendation }: RecommendationCar
       </dl>
 
       {frameworks.length > 0 && (
-        <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
-          Related framework: {frameworks.map((framework) => framework.name).join(", ")}
-        </p>
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
+          {frameworks.map((framework) => (
+            <span key={framework.id}>
+              {framework.name}{" "}
+              <Link
+                href={`/frameworks/${framework.id}`}
+                className="font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
+              >
+                Learn More
+              </Link>
+            </span>
+          ))}
+        </div>
       )}
     </li>
   );
