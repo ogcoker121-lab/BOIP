@@ -1,0 +1,42 @@
+import { InterviewAnswers } from "@/types/interview";
+import { buildOpportunityContext } from "@/src/domain/opportunity/context";
+import { buildOpportunitySnapshot } from "@/src/domain/opportunity/opportunity-mapper";
+import { buildDecisionWithTrace } from "@/src/domain/decision/mapper/decision-mapper";
+import { BusinessPlan } from "../models/business-plan";
+import { buildBusinessPlanSections } from "../builders/business-plan-builder";
+
+function generateBusinessPlanId(): string {
+  // Runtime id, not part of the permanent ontology - same convention as
+  // Decision's DEC-xxx (src/domain/decision/mapper/decision-mapper.ts).
+  // A plan is recomputed fresh from the same deterministic inputs, never
+  // persisted or hand-edited, so it doesn't need a stable identity.
+  return typeof crypto.randomUUID === "function" ? `BP-${crypto.randomUUID()}` : `BP-${Date.now()}`;
+}
+
+// Interview -> Opportunity -> Decision -> Business Plan. Never
+// recomputes route, opportunities, scores, or recommendations - reuses
+// buildOpportunitySnapshot() (v0.3) and buildDecisionWithTrace() (v0.6)
+// exactly as every other consumer does, and only assembles what those
+// domains already produced into readable sections.
+export function buildBusinessPlan(answers: InterviewAnswers, interviewId: string | null = null): BusinessPlan {
+  const opportunityContext = buildOpportunityContext(answers);
+  const snapshot = buildOpportunitySnapshot(answers);
+  const { decision } = buildDecisionWithTrace(answers, interviewId);
+  const bestMatch = decision.opportunities.find((match) => match.matchLabel === "Best Match");
+
+  const sections = buildBusinessPlanSections({ answers, opportunityContext, snapshot, decision, bestMatch });
+
+  const title = bestMatch ? `Business Plan: ${bestMatch.opportunity.title}` : "Business Plan";
+
+  return {
+    id: generateBusinessPlanId(),
+    title,
+    sections,
+    metadata: {
+      generatedAt: new Date().toISOString(),
+      route: decision.route,
+      opportunityId: bestMatch?.opportunity.id ?? null,
+      decisionId: decision.id,
+    },
+  };
+}
