@@ -2,6 +2,62 @@
 
 All notable changes to BOIP are documented in this file.
 
+## v0.7.0 (pending release)
+
+### Added
+
+- Knowledge Catalog: BOIP's canonical identity layer. Every permanent
+  object (`FW-xxx`, `REC-xxx`, `OPP-xxx`, `RULE-xxx`) is now a
+  `CatalogEntry` - title, description, owner, capability, version,
+  status, and declared relationships - resolvable through one service
+- `CatalogResolver`: `resolveCatalogEntry(id)` /
+  `resolveCatalogEntries(ids)` - the one place any permanent id resolves
+  to full metadata, deterministically
+- Declared relationships between permanent objects: `REC-xxx USES
+  FW-xxx`, `OPP-xxx USES FW-xxx`, `RULE-xxx GENERATES REC-xxx` - each
+  derived from a real, already-explicit structural fact (an existing
+  `frameworkReferences` field, or a knowledge rule's own `then`), never
+  guessed from a name or category
+- `schemaVersion` on every `CatalogEntry`, separate from the object's
+  own `version` - lets the catalog format evolve later without breaking
+  existing entries
+
+### Architecture
+
+- New domain, `src/domain/catalog/` (`models/`, `metadata/`,
+  `builders/`, `relationships/`, `resolver/`) - no UI, a platform
+  capability. Domains own behaviour; the catalog owns metadata
+- Builders read each source domain's own existing data
+  (`frameworkRegistry`, recommendation knowledge, `opportunityLibrary`,
+  route/recommendation/opportunity-signal rule knowledge) rather than
+  maintaining a second copy - the catalog builds itself
+- `metadata/` holds only what genuinely doesn't exist elsewhere
+  (framework capability, and uniform owner/version/status defaults)
+  rather than duplicating fields a domain already has (e.g.
+  `Recommendation.category` is read directly, not copied)
+- No existing consumer (`framework/registry.ts`'s `resolveFramework()`
+  and friends) has been migrated to the catalog yet - this release only
+  builds the identity layer itself; migrating call sites is a
+  deliberate later step
+
+### Excluded
+
+- Search, a knowledge graph, visualization, AI, persistence (per spec -
+  this release is the identity layer only)
+- `RECOMMENDS`/`RECOMMENDED_BY` relationships (`OPP-xxx` <-> `REC-xxx`):
+  no domain object links an Opportunity to a Recommendation today, so
+  there's nothing true to declare yet
+- Migrating existing domains to resolve ids through the catalog instead
+  of their own registries
+
+### Changed
+
+- N/A
+
+### Fixed
+
+- N/A
+
 ## v0.6.0
 
 ### Added
