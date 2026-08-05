@@ -16,7 +16,11 @@ feature (v0.7). Every framework referenced by a recommendation now has its
 own Framework Explorer page - what it is, why it was recommended, when to
 use it, expected outcome, common mistakes, and related frameworks - BOIP's
 first Learning Capability, built entirely from the Knowledge Catalog
-(v0.8).
+(v0.8). A founder who completes the interview now also gets a complete,
+deterministic Business Plan - Executive Summary, Business Opportunity,
+Customer, Revenue Model, Go-to-Market, First 90-Day Plan, Risks, and
+Recommended Frameworks - assembled entirely from BOIP's existing
+knowledge, no AI (v0.9).
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -64,8 +68,10 @@ falls back to the in-memory repository automatically.
   RecommendationCard (each referenced framework now links "Learn More"
   to its Framework Explorer page), TopOpportunities / OpportunityCard,
   NextMoveCard (now with an optional, collapsed-by-default
-  WhyBoipRecommended section), and the OpportunitySnapshot component
-  that composes all of them
+  WhyBoipRecommended section), the OpportunitySnapshot component that
+  composes all of them (now with a "View Full Business Plan" link), and
+  BusinessPlanView (renders a BusinessPlan's sections - no prose of its
+  own, every line is already templated by `src/domain/business-plan/`)
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
@@ -75,8 +81,8 @@ falls back to the in-memory repository automatically.
 - `app/business-plan/[id]/`, `app/side-hustle/[id]/`, `app/jobs/`,
   `app/skills/` - the Next Move's real clickable destinations. The plan
   pages show what the Starter Opportunity Library actually knows about a
-  named `OPP-xxx`, honestly labeled as library content rather than a
-  personalised plan (full plan generation is v0.6). `/jobs` and `/skills`
+  named `OPP-xxx` - library content, not a personalised plan (that's
+  `app/interview/business-plan/`, v0.9, below). `/jobs` and `/skills`
   are explicit about what's not built yet instead of faking content.
 - `app/frameworks/[id]/` - the Framework Explorer (v0.8): what a
   framework is, why BOIP recommended it, when to use it, expected
@@ -84,6 +90,13 @@ falls back to the in-memory repository automatically.
   framework - resolved entirely by
   `src/domain/framework-explorer/resolver/framework-explorer-resolver.ts`,
   server-rendered, no client state
+- `app/interview/business-plan/` - the Business Plan Generator (v0.9): a
+  complete, deterministic plan (Executive Summary, Business Opportunity,
+  Customer, Revenue Model, Go-to-Market, First 90-Day Plan, Risks,
+  Recommended Frameworks) assembled from the founder's own interview
+  answers - `buildBusinessPlan()`, reading the same in-memory answers
+  `app/interview/complete/` already reads. Reachable via a "View Full
+  Business Plan" link on the Opportunity Snapshot
 - `lib/interview-repository.ts` - the `InterviewRepository` interface, an
   in-memory implementation, and a factory that picks Supabase when
   configured
@@ -231,4 +244,37 @@ falls back to the in-memory repository automatically.
   mistakes, related frameworks (clickable), a recommended next
   framework, and a capability block. Linked from every Recommendation
   Card's "Learn More"
+- `src/domain/business-plan/` - the Business Plan Generator (v0.9): a
+  founder who completes the interview gets a complete, deterministic
+  plan assembled from the Interview, Opportunity, Decision,
+  Recommendations, and Knowledge Catalog. No AI, no LLMs, no text
+  generation APIs:
+  - `models/business-plan.ts` - `BusinessPlan` (id, title, sections[],
+    metadata), `BusinessPlanSection` (its own object per section: id,
+    title, content, recommendedFrameworks). `BusinessPlan.id` (`BP-xxx`)
+    is a runtime id, same convention as Decision's `DEC-xxx`
+  - `templates/` - one reusable, parameterized text-rendering function
+    per section - no component or section builder holds a hard-coded
+    paragraph. Every template only assembles text that already exists:
+    the Opportunity Snapshot's founderSummary (v0.3) and the Decision's
+    explanation (v0.6) for Executive Summary, the Snapshot's own
+    overview/strengths/watchList for Business Opportunity and Risks,
+    interview answers for Customer, matched-Opportunity fields for
+    Revenue Model and Go-to-Market
+  - `sections/` - one builder per section, each gathering the right
+    inputs and deriving its framework references from whichever
+    recommendations/opportunity actually applied - never hardcoded ids.
+    `shared.ts`'s `resolveFrameworkReferences()` resolves every one of
+    them through the Knowledge Catalog, the same rule the Framework
+    Explorer follows
+  - `builders/business-plan-builder.ts` - `buildBusinessPlanSections()`:
+    Version 1's eight sections in a fixed order (Executive Summary,
+    Business Opportunity, Customer, Revenue Model, Go-to-Market, First
+    90-Day Plan - buckets the recommendation engine's own priority
+    ordering into day ranges, not a new sort - Risks, Recommended
+    Frameworks)
+  - `mapper/business-plan-mapper.ts` - `buildBusinessPlan()`, pure;
+    reuses `buildOpportunitySnapshot()` (v0.3) and
+    `buildDecisionWithTrace()` (v0.6) exactly as every other consumer
+    does, never recomputes route/opportunities/scores/recommendations
 - `supabase/migrations/` - schema SQL
