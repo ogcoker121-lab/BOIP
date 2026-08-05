@@ -7,6 +7,7 @@ import { Recommendation } from "../models/recommendation";
 // available REC-xxx id to change behavior.
 export const customerDiscoveryRecommendations: Rule<OpportunityContext, Recommendation>[] = [
   {
+    id: "RULE-016",
     when: { businessStage: "Just an idea" },
     then: [
       {
@@ -29,6 +30,7 @@ export const customerDiscoveryRecommendations: Rule<OpportunityContext, Recommen
     ],
   },
   {
+    id: "RULE-017",
     when: { businessStage: "Validating the problem" },
     then: [
       {

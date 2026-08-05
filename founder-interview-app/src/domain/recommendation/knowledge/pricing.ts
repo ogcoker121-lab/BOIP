@@ -4,6 +4,7 @@ import { Recommendation } from "../models/recommendation";
 
 export const pricingRecommendations: Rule<OpportunityContext, Recommendation>[] = [
   {
+    id: "RULE-020",
     when: { revenueModel: "Not sure yet" },
     then: [
       {

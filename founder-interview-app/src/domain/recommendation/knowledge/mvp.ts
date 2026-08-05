@@ -4,6 +4,7 @@ import { Recommendation } from "../models/recommendation";
 
 export const mvpRecommendations: Rule<OpportunityContext, Recommendation>[] = [
   {
+    id: "RULE-022",
     when: { businessStage: "Just an idea" },
     then: [
       {
@@ -25,6 +26,7 @@ export const mvpRecommendations: Rule<OpportunityContext, Recommendation>[] = [
     ],
   },
   {
+    id: "RULE-023",
     when: { businessStage: "Building an MVP or early product" },
     then: [
       {
