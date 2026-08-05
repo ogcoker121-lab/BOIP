@@ -2,6 +2,102 @@
 
 All notable changes to BOIP are documented in this file.
 
+## v0.9.1
+
+### Added
+
+- A Vitest domain test suite: one co-located `*.test.ts` per domain
+  (Shared Engine, Opportunity, Recommendation, Decision, Catalog,
+  Framework Explorer, Business Plan, Roadmap), covering each domain's
+  public entry point plus small pure functions worth testing in
+  isolation - 82 tests total
+- Coverage reporting (`npm run test:coverage`, v8 provider) - no
+  minimum threshold, generated for visibility only
+- `src/architecture.test.ts` - dependency tests (not unit tests) that
+  read the file tree and assert five named domain-boundary rules,
+  independent of the ESLint rule below (each verified to actually fail
+  when its violation is deliberately reintroduced)
+- A Playwright E2E suite (`e2e/`) exercising the real founder workflow
+  against a production build: Landing -> Interview -> Review -> Submit
+  -> Opportunity Snapshot -> Business Plan, plus the Framework Explorer
+  reached via a recommendation's "Learn More" link and its not-found
+  degradation for an unknown id
+- `components/shared/`: `Loading`, `EmptyState`, `ErrorState` - the
+  three shared states any page needs
+- `app/error.tsx` - a route error boundary using `ErrorState`, for
+  genuinely unexpected runtime crashes
+- `docs/ACCESSIBILITY_AUDIT.md` - a full manual accessibility audit
+  (keyboard, focus, semantics, ARIA, screen reader, WCAG 2.1 AA colour
+  contrast computed directly from this app's actual colours)
+- `docs/ARCHITECTURE.md` - the architectural principles behind the
+  domain structure (shared rule engine, permanent vs. runtime ids,
+  domain boundary enforcement, testing strategy)
+- `CONTRIBUTING.md` - the contributor guide
+
+### Architecture
+
+- Every domain under `src/domain/<name>/` now exposes exactly one
+  public surface, `index.ts` - all cross-domain imports (~56 files)
+  migrated from deep internal paths to their domain's barrel. Two
+  domains (`opportunity`, `route-decision`) resolve a genuine mutual
+  type dependency via `import type`, which is fully erased at compile
+  time and creates no runtime circularity
+- `eslint.config.mjs`: a `no-restricted-imports` rule bans any
+  `@/src/domain/*/**` deep import, with zero per-file exceptions. Where
+  a consumer genuinely needs raw domain knowledge (the Decision trace
+  engine, the Catalog's builders), the *owning* domain's own barrel
+  exports that knowledge explicitly, documented as intentional, rather
+  than carving out a lint exception
+- Vitest (`vitest.config.mts`) and Playwright (`playwright.config.ts`)
+  test tooling added; Playwright runs against `npm run build && npm
+  run start`, not the dev server, to avoid dev-mode cold-compile
+  flakiness
+
+### Excluded
+
+- No AI, no new founder-facing capability, no change to business
+  logic, recommendation logic, opportunity matching, or Decision
+  behaviour - this release hardens the existing platform, it doesn't
+  extend it
+- TD-006 (the duplicate `matchOpportunities()` call in
+  `decision-mapper.ts`'s `skill_path` handling, flagged and
+  consciously deferred in the v0.6 review) - left exactly where that
+  review decision left it. A hardening release is not a refactoring
+  release
+- Component-level (React Testing Library / jsdom) UI tests - out of
+  scope for this release's approved test plan, which covers domains,
+  architecture boundaries, and the real end-to-end flow
+
+### Changed
+
+- `app/frameworks/[id]`, `app/business-plan/[id]`, `app/side-hustle/[id]`:
+  their hand-written "not found" blocks now render `EmptyState`;
+  message wording preserved exactly
+- `InterviewContext`: the "Loading your interview…" text now renders
+  `Loading`
+- `QuestionCard`: every text/textarea/select field and multi-select
+  option button gets a visible focus ring in addition to the existing
+  border-colour change; required fields carry the native `required`
+  attribute; the validation error is now associated with its field via
+  `aria-describedby`/`aria-invalid` and announced via `role="alert"`;
+  the multi-select group's accessible name now points at the actual
+  question label instead of its first option; the required-asterisk
+  and error text moved off `red-500` (3.76:1 on white, fails WCAG AA)
+  to `red-600`/`dark:red-400` (both pass)
+- `ReviewAnswers`, `RecommendationCard`, `BusinessPlanView`: repeated
+  "Edit"/"Learn More" controls now carry a disambiguating `aria-label`
+- `ProgressBar`: the track now exposes `role="progressbar"` with
+  `aria-valuenow`/`aria-valuemin`/`aria-valuemax`/`aria-valuetext`
+- `app/frameworks/[id]`, `app/business-plan/[id]`, `app/side-hustle/[id]`:
+  added `generateStaticParams()` so all 9 framework pages and 16
+  opportunity pages pre-render as static HTML at build time instead of
+  resolving per request - a rendering-time change only, output is
+  identical, and ids outside the known set still render on demand
+
+### Fixed
+
+- N/A
+
 ## v0.9.0
 
 ### Added
