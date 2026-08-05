@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getOpportunityById } from "@/src/domain/opportunity";
 import { resolveFrameworks } from "@/src/domain/framework";
+import EmptyState from "@/components/shared/EmptyState";
 
 export default async function BusinessPlanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -9,13 +10,11 @@ export default async function BusinessPlanPage({ params }: { params: Promise<{ i
   if (!opportunity) {
     return (
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-16">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Opportunity not found</h1>
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-          We couldn&apos;t find an opportunity with the id &ldquo;{id}&rdquo;.
-        </p>
-        <Link href="/" className="mt-6 inline-block text-sm font-medium text-zinc-900 underline dark:text-zinc-50">
-          Back to home
-        </Link>
+        <EmptyState
+          title="Opportunity not found"
+          message={`We couldn't find an opportunity with the id “${id}”.`}
+          action={{ href: "/", label: "Back to home" }}
+        />
       </main>
     );
   }

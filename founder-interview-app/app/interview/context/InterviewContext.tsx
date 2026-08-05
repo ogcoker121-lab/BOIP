@@ -9,6 +9,7 @@ import {
   saveInterviewProgress,
   submitInterview as submitInterviewRequest,
 } from "@/lib/interview-client";
+import Loading from "@/components/shared/Loading";
 
 const STORAGE_KEY = "boip-interview-id";
 const SAVE_DEBOUNCE_MS = 500;
@@ -219,7 +220,7 @@ export function InterviewProvider({ children }: { children: ReactNode }) {
   };
 
   if (!ready) {
-    return <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading your interview…</p>;
+    return <Loading message="Loading your interview…" />;
   }
 
   const value: InterviewContextValue = {
