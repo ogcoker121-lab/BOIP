@@ -3,6 +3,7 @@ import { OpportunitySnapshot as OpportunitySnapshotData } from "@/src/domain/opp
 import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
 import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
 import { NextMove } from "@/src/domain/route-decision/mapper/next-move-mapper";
+import { Explanation } from "@/src/domain/decision/models/decision";
 import FounderSummary from "./FounderSummary";
 import OpportunityOverview from "./OpportunityOverview";
 import StrengthsList from "./StrengthsList";
@@ -16,6 +17,7 @@ interface OpportunitySnapshotProps {
   recommendations: Recommendation[];
   matches: OpportunityMatch[];
   nextMove: NextMove;
+  explanation: Explanation;
   onRestart: () => void;
 }
 
@@ -24,6 +26,7 @@ export default function OpportunitySnapshot({
   recommendations,
   matches,
   nextMove,
+  explanation,
   onRestart,
 }: OpportunitySnapshotProps) {
   return (
@@ -34,7 +37,7 @@ export default function OpportunitySnapshot({
       </p>
 
       <div className="mt-6">
-        <NextMoveCard nextMove={nextMove} />
+        <NextMoveCard nextMove={nextMove} explanation={explanation} />
       </div>
 
       <div className="mt-6 space-y-6 divide-y divide-zinc-200 [&>section:not(:first-child)]:pt-6 dark:divide-zinc-800">
