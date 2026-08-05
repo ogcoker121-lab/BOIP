@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { getOpportunityById } from "@/src/domain/opportunity";
+import { getOpportunityById, opportunityLibrary } from "@/src/domain/opportunity";
 import { resolveFrameworks } from "@/src/domain/framework";
 import EmptyState from "@/components/shared/EmptyState";
+
+// Every opportunity id is known at build time (the curated Starter
+// Opportunity Library, not user content) - see the matching comment in
+// app/frameworks/[id]/page.tsx for why this is safe to pre-render.
+export function generateStaticParams() {
+  return opportunityLibrary.map((opportunity) => ({ id: opportunity.id }));
+}
 
 export default async function BusinessPlanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

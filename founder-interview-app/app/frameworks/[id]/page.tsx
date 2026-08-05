@@ -1,6 +1,19 @@
 import Link from "next/link";
 import { resolveFrameworkPage } from "@/src/domain/framework-explorer";
+import { frameworkRegistry } from "@/src/domain/framework";
 import EmptyState from "@/components/shared/EmptyState";
+
+// Every framework id is known at build time (a fixed, curated
+// registry, not open-ended user content) - pre-rendering all of them
+// statically means a request for /frameworks/FW-001 is served from the
+// build output instead of resolving the page fresh per request. Purely
+// a rendering-time change: resolveFrameworkPage's own output is
+// identical either way, and any id outside this list still falls back
+// to on-demand rendering (and the same not-found EmptyState below) as
+// before.
+export function generateStaticParams() {
+  return Object.keys(frameworkRegistry).map((id) => ({ id }));
+}
 
 // BOIP's first Learning Capability: not a business plan generator, not
 // AI - a deterministic page resolved entirely from the Knowledge
