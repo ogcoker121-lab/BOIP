@@ -1,14 +1,15 @@
 # Founder Discovery Interview
 
 A minimal Next.js app implementing the BOIP Founder Discovery Interview
-workflow: landing page -> 14-question interview -> review -> submit ->
-Opportunity Snapshot with Recommended Actions. Progress auto-saves and
+workflow: landing page -> 19-question interview -> review -> submit ->
+Opportunity Snapshot with a personalised Next Move. Progress auto-saves and
 resumes across refreshes/return visits (v0.2). After submitting, the founder
-gets a structured, rule-based read on their idea (v0.3) plus ordered,
-concrete next actions (v0.4) - no AI anywhere.
+gets a structured, rule-based read on their idea (v0.3), ordered concrete
+next actions (v0.4), and a named business/side-hustle/job/hybrid/skill-path
+recommendation with one clickable next step (v0.5) - no AI anywhere.
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
-analytics, no reports.
+analytics, no reports, no live search.
 
 ## Getting Started
 
@@ -38,23 +39,32 @@ falls back to the in-memory repository automatically.
 
 ## Structure
 
-- `data/questions.ts` - the 14 interview questions (data, not UI). Four
-  (industry, business-stage, revenue-model, market-type) are structured
-  select fields added in v0.3 so both domains below have real categorical
-  data to key off, rather than guessing from prose.
-- `types/interview.ts` - the `InterviewQuestion` shape
+- `data/questions.ts` - the 19 interview questions (data, not UI). Every
+  question is tagged with the capability that consumes it
+  (`QuestionCapability` in `types/interview.ts`) - Founder Discovery, Route
+  Decision, Opportunity Matching, Business Planning (future), Career
+  Guidance (future) - so the interview can't drift into a generic survey.
+- `types/interview.ts` - `InterviewQuestion`, `QuestionCapability`, and the
+  `multi-select` question type (comma-joined string, capped by
+  `maxSelections`)
 - `components/interview/` - Interview, QuestionCard, ProgressBar,
   NavigationButtons, ReviewAnswers (presentational, no state, no
-  persistence), plus the Opportunity Snapshot's FounderSummary,
+  persistence), the Opportunity Snapshot's FounderSummary,
   OpportunityOverview, StrengthsList, WatchList, RecommendedActions /
-  RecommendationCard, and the OpportunitySnapshot component that composes
-  them
+  RecommendationCard, TopOpportunities / OpportunityCard, NextMoveCard, and
+  the OpportunitySnapshot component that composes all of them
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
 - `app/api/interview/` - the service layer: `POST /api/interview` (create),
   `GET /api/interview/:id` (resume), `PATCH /api/interview/:id` (save an
   answer and/or the current question pointer, or `{action: "submit"}`)
+- `app/business-plan/[id]/`, `app/side-hustle/[id]/`, `app/jobs/`,
+  `app/skills/` - the Next Move's real clickable destinations. The plan
+  pages show what the Starter Opportunity Library actually knows about a
+  named `OPP-xxx`, honestly labeled as library content rather than a
+  personalised plan (full plan generation is v0.6). `/jobs` and `/skills`
+  are explicit about what's not built yet instead of faking content.
 - `lib/interview-repository.ts` - the `InterviewRepository` interface, an
   in-memory implementation, and a factory that picks Supabase when
   configured
@@ -62,36 +72,53 @@ falls back to the in-memory repository automatically.
   (server-only)
 - `lib/interview-client.ts` - the browser-side fetch wrapper the Context
   uses; never touches the repository or Supabase directly
-- `src/domain/shared/rule-engine.ts` - the one generic evaluation engine
-  (`Rule<Context, Result>` + `evaluateRules()`). Knows nothing about
-  interviews, opportunities, or recommendations - every domain below
-  reuses it rather than building its own.
+- `src/domain/shared/` - the one generic evaluation engine
+  (`rule-engine.ts`: `Rule<Context, Result>` + `evaluateRules()`) and
+  `NextMoveType`, both shared across domains so none of them depend on each
+  other for these
+- `src/domain/framework/registry.ts` - resolves `FW-xxx` to
+  `{name, summary, whyItMatters}`. A founder never sees a raw framework id;
+  wherever one is referenced (recommendation cards, opportunity plan pages)
+  it's resolved here first.
 - `src/domain/opportunity/` - describes the opportunity:
   - `context.ts` - `OpportunityContext` plus `buildOpportunityContext()`,
-    shared with the recommendation domain so both read the interview
+    shared by every other domain so all of them read the interview
     identically
   - `knowledge/customer-validation.ts`, `knowledge/pricing.ts` -
-    deterministic mappings as data (strengths, watch-list signals). Named
-    `knowledge/` rather than `rules/` since not everything BOIP evaluates
-    will be a simple condition -> outcome rule forever.
-  - `snapshot-model.ts` - the `OpportunitySnapshot` / `OpportunityOverview`
-    shapes
-  - `opportunity-mapper.ts` - `buildOpportunitySnapshot()`, pure,
-    UI-independent
-- `src/domain/recommendation/` - decides what to do about it (its own
-  domain, not part of opportunity):
+    deterministic strengths/watch-list signals, as data
+  - `snapshot-model.ts`, `opportunity-mapper.ts` - `OpportunitySnapshot`
+    and `buildOpportunitySnapshot()`, pure, UI-independent
+  - `library/` - the Starter Opportunity Library as a domain object, not
+    static pages: `models/opportunity.ts` (`Opportunity`, `OPP-xxx`
+    permanent id - its attribute fields ARE the recommendation rules, not
+    a separate parallel list), `catalog/` (16 curated entries, 7 business +
+    9 side-hustle, spanning all ten skill categories), `matching/` (scores
+    library entries 0-100 against a founder profile - skills/capital/time/
+    risk/industry - and picks a diverse Top 3; explicitly a profile-fit
+    score, not a success prediction)
+- `src/domain/route-decision/` - decides business_plan / side_hustle /
+  job_search / hybrid_path / skill_path:
+  - `models/route-context.ts` - derives normalized bands (risk, urgency,
+    capital, time, a composite business-readiness score) from raw answers
+  - `knowledge/route-weights.ts` - each row is a weighted nudge toward one
+    route, including compound conditions so weak fundamentals actively
+    count against `business_plan` rather than only boosting alternatives
+  - `engine/route-decision-engine.ts` - sums weighted contributions
+    (reusing the shared engine for matching) and picks the highest; an
+    explicit "find a job" preference is honored unconditionally, never
+    outweighed by other signals
+  - `mapper/route-decision-mapper.ts`, `mapper/next-move-mapper.ts` - the
+    latter is the top of the pipeline: decides the route, matches
+    opportunities against it, applies the `skill_path` override if
+    matching found a genuine skills gap, and produces the one clickable
+    `NextMove`
+- `src/domain/recommendation/` - decides what to do about the opportunity
+  (its own domain, not part of `opportunity/`):
   - `models/recommendation.ts` - the `Recommendation` shape: permanent
-    `id` (`REC-xxx`, hand-assigned in knowledge, never renumbered/reused -
-    the start of BOIP's internal ontology), category/priority/effort/
-    impact enums, `actions[]`, and `frameworkReferences[]` (stable
-    `FW-xxx` IDs, not free-text framework names)
-  - `knowledge/` - one file per category (customer-discovery,
-    business-model, market-validation, pricing, competition, mvp), data
-    only
-  - `engine/recommendation-engine.ts` - runs the shared `evaluateRules()`
-    against all six knowledge sets (not a second engine), then sorts
-    deterministically by priority, then impact, then effort
-  - `mapper/recommendation-mapper.ts` - `buildRecommendations()`, pure,
-    UI-independent, builds the same `OpportunityContext` the opportunity
-    domain does
+    `id` (`REC-xxx`), category/priority/effort/impact enums, `actions[]`,
+    `frameworkReferences[]`
+  - `knowledge/` - one file per category, data only
+  - `engine/recommendation-engine.ts` - the shared engine plus
+    deterministic sorting (priority, then impact, then effort)
+  - `mapper/recommendation-mapper.ts` - `buildRecommendations()`, pure
 - `supabase/migrations/` - schema SQL

@@ -1,4 +1,5 @@
 import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { resolveFrameworks } from "@/src/domain/framework/registry";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;
@@ -12,6 +13,8 @@ const PRIORITY_STYLES: Record<Recommendation["priority"], string> = {
 };
 
 export default function RecommendationCard({ recommendation }: RecommendationCardProps) {
+  const frameworks = resolveFrameworks(recommendation.frameworkReferences);
+
   return (
     <li className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
       <span
@@ -47,6 +50,12 @@ export default function RecommendationCard({ recommendation }: RecommendationCar
           <dd className="mt-0.5 font-medium text-zinc-900 dark:text-zinc-50">{recommendation.estimatedImpact}</dd>
         </div>
       </dl>
+
+      {frameworks.length > 0 && (
+        <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+          Related framework: {frameworks.map((framework) => framework.name).join(", ")}
+        </p>
+      )}
     </li>
   );
 }

@@ -2,7 +2,65 @@
 
 All notable changes to BOIP are documented in this file.
 
-## v0.4.0 (pending release)
+## v0.5.0 (pending release)
+
+### Added
+
+- Opportunity Discovery: replaces generic "next steps" text with a named
+  business, side-hustle, job, hybrid, or skill-building recommendation and
+  one primary clickable Next Move
+- Starter Opportunity Library: 16 curated opportunities (`OPP-xxx`
+  permanent ids) as first-class domain objects, not static pages
+- Route Decision Engine: deterministically decides business_plan /
+  side_hustle / job_search / hybrid_path / skill_path from risk tolerance,
+  income urgency, employment status, stated preference, and a composite
+  business-readiness score
+- Opportunity matching and scoring (0-100 profile-fit, not a success
+  prediction) with diversity-aware Top 3 selection (Best Match / Strong
+  Alternative / Different Direction)
+- Framework Resolver: `FW-xxx` references resolve to real names/summaries
+  everywhere they appear, including v0.4's recommendation cards
+- Real clickable routes: `/business-plan/[id]`, `/side-hustle/[id]`,
+  `/jobs`, `/skills`
+- Five new interview questions (professional skills, preferred path,
+  employment status, risk tolerance, income urgency), every question
+  tagged with the capability that consumes it
+
+### Architecture
+
+- `src/domain/shared/rule-engine.ts` and `NextMoveType` are shared
+  primitives - opportunity/, recommendation/, and route-decision/ all
+  build on them without depending on each other
+- Route decision uses weighted knowledge rows (including compound
+  conditions) evaluated by the same shared engine, not a second one -
+  multi-signal decisions summed and ranked rather than a single rule
+  deciding everything
+- skill_path is applied after opportunity matching, not during route
+  decision, since it depends on match quality
+- Opportunity Library entries are self-describing: their attribute fields
+  (suitableFor, risk, capital, skills, time) are the matching rules
+  themselves, not a separate parallel rule set
+
+### Excluded
+
+- AI / LLM-generated recommendations
+- Live search, live jobs, external APIs, market feeds
+- Opportunity Score
+- Payments
+- Authentication
+- Analytics
+
+### Changed
+
+- Interview grew from 14 to 19 questions
+- Recommendation cards (v0.4) now show resolved framework names instead of
+  raw `FW-xxx` ids
+
+### Fixed
+
+- N/A
+
+## v0.4.0
 
 ### Added
 
