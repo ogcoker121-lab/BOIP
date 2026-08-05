@@ -1,4 +1,12 @@
+import { existsSync } from "fs";
 import { defineConfig, devices } from "@playwright/test";
+
+// Some sandboxed environments (this one included) pre-install a Chromium
+// build under a fixed path instead of letting Playwright download its own
+// pinned revision. When that path exists, use it rather than requiring a
+// network fetch; everywhere else (a normal dev machine, standard CI) this
+// is a no-op and Playwright resolves its browser the usual way.
+const preinstalledChromium = "/opt/pw-browsers/chromium";
 
 // Integration/E2E: the founder workflow this suite exercises is
 // Landing -> Interview -> Opportunity Snapshot -> Recommendations ->
@@ -13,6 +21,7 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    ...(existsSync(preinstalledChromium) ? { launchOptions: { executablePath: preinstalledChromium } } : {}),
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
