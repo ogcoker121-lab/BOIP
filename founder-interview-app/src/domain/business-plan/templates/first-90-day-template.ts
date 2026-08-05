@@ -1,14 +1,10 @@
-// Buckets are assembled by sections/first-90-day-plan-section.ts from
-// the recommendation engine's own priority ordering (recommendation
-// domain, v0.4) - this template only renders whatever buckets it's
-// given, it doesn't decide what goes in them.
-export interface NinetyDayBucket {
-  label: string;
-  items: string[];
-}
+import { Roadmap } from "@/src/domain/roadmap/models/roadmap";
 
-export function renderFirst90DayPlan(buckets: NinetyDayBucket[]): string[] {
-  return buckets
+// Renders whatever roadmap it's given - bucketing is the roadmap
+// domain's job (src/domain/roadmap/), not this template's. Business
+// Plan consumes a Roadmap, it doesn't build one.
+export function renderFirst90DayPlan(roadmap: Roadmap): string[] {
+  return roadmap.buckets
     .filter((bucket) => bucket.items.length > 0)
     .flatMap((bucket) => [`${bucket.label}:`, ...bucket.items.map((item) => `- ${item}`)]);
 }

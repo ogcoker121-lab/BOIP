@@ -9,14 +9,16 @@ export interface BusinessPlanFrameworkReference {
   title: string;
 }
 
+// Canonical section ids/titles - use exactly these everywhere a section
+// is created or referenced.
 export type BusinessPlanSectionId =
   | "executive-summary"
   | "business-opportunity"
-  | "customer"
+  | "target-customer"
   | "revenue-model"
-  | "go-to-market"
-  | "first-90-day-plan"
-  | "risks"
+  | "go-to-market-strategy"
+  | "first-90-day-action-plan"
+  | "key-risks"
   | "recommended-frameworks";
 
 // Every section is its own object - content is a list of already-rendered

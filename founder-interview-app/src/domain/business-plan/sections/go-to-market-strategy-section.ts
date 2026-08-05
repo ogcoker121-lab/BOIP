@@ -5,7 +5,7 @@ import { renderGoToMarket } from "../templates/go-to-market-template";
 import { BusinessPlanSection } from "../models/business-plan";
 import { resolveFrameworkReferences } from "./shared";
 
-export function buildGoToMarketSection(
+export function buildGoToMarketStrategySection(
   opportunityContext: OpportunityContext,
   bestMatch: OpportunityMatch | undefined,
   recommendations: Recommendation[],
@@ -20,8 +20,8 @@ export function buildGoToMarketSection(
     .flatMap((recommendation) => recommendation.frameworkReferences);
 
   return {
-    id: "go-to-market",
-    title: "Go-to-Market",
+    id: "go-to-market-strategy",
+    title: "Go-to-Market Strategy",
     content,
     recommendedFrameworks: resolveFrameworkReferences(frameworkIds),
   };
