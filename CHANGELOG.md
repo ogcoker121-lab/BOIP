@@ -6,10 +6,14 @@ All notable changes to BOIP are documented in this file.
 
 ### Added
 
-- Decision Engine: a deterministic object (`Decision`) that ties every
+- Decision Engine: a deterministic `Decision` object that ties every
   existing engine's output together and explains why BOIP reached its
   conclusions - it does not change any recommendation, route, match, or
   score, it only explains them
+- `DecisionTrace`: the internal explainability record alongside
+  `Decision` - full signals and evaluations, plus id-only indices
+  (`matchedRules`, `firedRecommendations`) for report/AI/developer
+  consumers, kept separate from the UI-facing `Decision`
 - `Signal` extraction: a human-readable view of which interview answers
   actually fed a decision (e.g. "Risk Tolerance = High"), traced back to
   the source question id
@@ -32,9 +36,13 @@ All notable changes to BOIP are documented in this file.
 - New domain, `src/domain/decision/` (`models/`, `engine/`, `mapper/`,
   `trace/`), separate from every domain it explains - it reads their
   output, never recomputes or overrides it
-- `Decision` is a computed object, not persisted - its `id` (`DEC-xxx`)
-  is a runtime id, not part of the permanent ontology, since a Decision
-  is recomputed fresh every time an interview is evaluated
+- `Decision` (UI-facing) and `DecisionTrace` (developer/report/AI-facing)
+  are deliberately separate objects, both computed together by
+  `buildDecisionWithTrace()` - the public model stays clean without
+  losing any explainability
+- `Decision.id` (`DEC-xxx`) is a runtime id, not part of the permanent
+  ontology, since a Decision is recomputed fresh every time an interview
+  is evaluated and never persisted
 - BOIP's mental model shifts from a linear pipeline to an evaluation
   graph: Interview Signals -> Knowledge Evaluation -> Decision ->
   (Recommendations, Opportunity Matches) -> Framework References ->
