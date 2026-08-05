@@ -7,6 +7,7 @@ import { competitionRecommendations } from "@/src/domain/recommendation/knowledg
 import { mvpRecommendations } from "@/src/domain/recommendation/knowledge/mvp";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { recommendationCatalogDefaults } from "../metadata/recommendation-metadata";
+import { deriveRecommendationRelationships } from "../relationships/recommendation-relationships";
 
 // The same six knowledge files decision-engine.ts already reads, for the
 // same reason: there's no exported flat list of every Recommendation
@@ -28,8 +29,7 @@ export function allRecommendations(): Recommendation[] {
 
 // Recommendation already has its own category (the catalog capability)
 // and title/description - sourced directly rather than duplicated in
-// metadata/. Relationships (USES a framework) come from
-// relationships/recommendation-relationships.ts.
+// metadata/.
 export function buildRecommendationCatalogEntries(): CatalogEntry[] {
   return allRecommendations().map((recommendation) =>
     createCatalogEntry({
@@ -41,7 +41,7 @@ export function buildRecommendationCatalogEntries(): CatalogEntry[] {
       capability: recommendation.category,
       version: recommendationCatalogDefaults.version,
       status: recommendationCatalogDefaults.status,
-      relationships: [],
+      relationships: deriveRecommendationRelationships(recommendation),
     }),
   );
 }

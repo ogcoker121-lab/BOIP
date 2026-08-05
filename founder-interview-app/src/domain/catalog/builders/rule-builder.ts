@@ -12,6 +12,7 @@ import {
 import { pricingWatchItems as opportunityPricingWatchItems } from "@/src/domain/opportunity/knowledge/pricing";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { ruleCatalogMetadataBySource } from "../metadata/rule-metadata";
+import { deriveRuleGeneratesRelationship } from "../relationships/rule-relationships";
 
 const RECOMMENDATION_KNOWLEDGE = [
   customerDiscoveryRecommendations,
@@ -57,7 +58,8 @@ function recommendationRuleEntries(): CatalogEntry[] {
   const metadata = ruleCatalogMetadataBySource.recommendation;
   return RECOMMENDATION_KNOWLEDGE.flatMap((rules) =>
     rules.map((rule) => {
-      const reason = rule.then[0]?.reason ?? "";
+      const recommendation = rule.then[0];
+      const reason = recommendation?.reason ?? "";
       return createCatalogEntry({
         id: rule.id,
         type: "Rule",
@@ -67,7 +69,7 @@ function recommendationRuleEntries(): CatalogEntry[] {
         capability: metadata.capability,
         version: metadata.version,
         status: metadata.status,
-        relationships: [],
+        relationships: recommendation ? [deriveRuleGeneratesRelationship(rule.id, recommendation)] : [],
       });
     }),
   );
