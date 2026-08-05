@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { matches, evaluateRules, evaluateRulesWithTrace, Rule } from "@/src/domain/shared/rule-engine";
+import { matches, evaluateRules, evaluateRulesWithTrace, Rule } from "./rule-engine";
 
 interface Context {
   a: string;
