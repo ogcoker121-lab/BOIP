@@ -31,3 +31,10 @@ export interface CatalogEntry {
   relationships: Relationship[];
   schemaVersion: string;
 }
+
+// Every builder constructs entries through this rather than a literal -
+// schemaVersion is the catalog's own concern, not something each builder
+// should have to remember to set (or could set inconsistently).
+export function createCatalogEntry(entry: Omit<CatalogEntry, "schemaVersion">): CatalogEntry {
+  return { ...entry, schemaVersion: CATALOG_SCHEMA_VERSION };
+}
