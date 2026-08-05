@@ -1,4 +1,5 @@
 import { CatalogEntry } from "../models/catalog-entry";
+import { Relationship } from "../models/relationship";
 import { buildFrameworkCatalogEntries } from "../builders/framework-builder";
 import { buildRecommendationCatalogEntries } from "../builders/recommendation-builder";
 import { buildOpportunityCatalogEntries } from "../builders/opportunity-builder";
@@ -30,4 +31,15 @@ export function resolveCatalogEntry(id: string): CatalogEntry | null {
 
 export function resolveCatalogEntries(ids: string[]): CatalogEntry[] {
   return ids.map(resolveCatalogEntry).filter((entry): entry is CatalogEntry => entry !== null);
+}
+
+// The one reverse lookup the catalog exposes: which relationships point
+// AT this id (e.g. every REC-xxx/OPP-xxx that USES a given FW-xxx).
+// Still flat id-based filtering, not traversal or a graph engine - a
+// consumer that wants a related framework's own relationships still
+// calls resolveCatalogEntry() again for that id, one hop at a time.
+export function resolveRelationshipsTargeting(targetId: string): Relationship[] {
+  return getCatalog()
+    .flatMap((entry) => entry.relationships)
+    .filter((relationship) => relationship.targetId === targetId);
 }

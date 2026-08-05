@@ -12,7 +12,11 @@ interview answers and knowledge rules that produced it (v0.6) - no AI
 anywhere. Under the hood, every permanent object (frameworks,
 recommendations, opportunities, rules) is now resolvable through one
 Knowledge Catalog - BOIP's canonical identity layer, not a founder-facing
-feature (v0.7).
+feature (v0.7). Every framework referenced by a recommendation now has its
+own Framework Explorer page - what it is, why it was recommended, when to
+use it, expected outcome, common mistakes, and related frameworks - BOIP's
+first Learning Capability, built entirely from the Knowledge Catalog
+(v0.8).
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -57,9 +61,11 @@ falls back to the in-memory repository automatically.
   NavigationButtons, ReviewAnswers (presentational, no state, no
   persistence), the Opportunity Snapshot's FounderSummary,
   OpportunityOverview, StrengthsList, WatchList, RecommendedActions /
-  RecommendationCard, TopOpportunities / OpportunityCard, NextMoveCard
-  (now with an optional, collapsed-by-default WhyBoipRecommended section),
-  and the OpportunitySnapshot component that composes all of them
+  RecommendationCard (each referenced framework now links "Learn More"
+  to its Framework Explorer page), TopOpportunities / OpportunityCard,
+  NextMoveCard (now with an optional, collapsed-by-default
+  WhyBoipRecommended section), and the OpportunitySnapshot component
+  that composes all of them
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
@@ -72,6 +78,12 @@ falls back to the in-memory repository automatically.
   named `OPP-xxx`, honestly labeled as library content rather than a
   personalised plan (full plan generation is v0.6). `/jobs` and `/skills`
   are explicit about what's not built yet instead of faking content.
+- `app/frameworks/[id]/` - the Framework Explorer (v0.8): what a
+  framework is, why BOIP recommended it, when to use it, expected
+  outcome, common mistakes, related frameworks, and a recommended next
+  framework - resolved entirely by
+  `src/domain/framework-explorer/resolver/framework-explorer-resolver.ts`,
+  server-rendered, no client state
 - `lib/interview-repository.ts` - the `InterviewRepository` interface, an
   in-memory implementation, and a factory that picks Supabase when
   configured
@@ -181,9 +193,42 @@ falls back to the in-memory repository automatically.
     relationship traces to a field that already existed
   - `resolver/catalog-resolver.ts` - `resolveCatalogEntry(id)` /
     `resolveCatalogEntries(ids)`, the one place any permanent id
-    resolves to full metadata; builds the merged catalog once
-  - `index.ts` - the domain's public surface for future consumers
-    (report generator, AI enrichment, Framework Explorer, knowledge
-    graph). No existing domain has been migrated to resolve ids through
-    it yet - this release only builds the identity layer itself
+    resolves to full metadata; builds the merged catalog once.
+    `resolveRelationshipsTargeting(id)` (v0.8) is the one reverse lookup
+    exposed - which relationships point at this id - still flat
+    id-based filtering, not a graph
+  - `index.ts` - the domain's public surface for consumers (the
+    Framework Explorer, v0.8, is the first real one; a report
+    generator, AI enrichment, or knowledge graph could be next). No
+    existing pre-v0.8 domain has been migrated to resolve ids through
+    it - this release only builds the identity layer itself
+- `src/domain/framework-explorer/` - BOIP's first Learning Capability
+  (v0.8): helps a founder understand a recommended framework, not
+  generate a plan. Resolves everything exclusively through the
+  Knowledge Catalog - never imports the recommendation, opportunity, or
+  rule domains directly:
+  - `models/framework-page.ts` - `FrameworkPage`, the shape one
+    Explorer page needs; `FrameworkPageReference` (id + title only) is
+    what related-framework/used-by lists carry, never a second copy of
+    a `CatalogEntry`
+  - `knowledge/framework-guidance.ts` - hand-authored, deterministic
+    whenToUse/expectedOutcome/commonMistakes per `FW-xxx` - the same
+    kind of knowledge as `frameworkRegistry` itself, keyed to the
+    catalog's existing ids rather than minting new identity
+  - `resolver/framework-explorer-resolver.ts` -
+    `resolveFrameworkPage(id)`: `whatItIs`/description come straight
+    from the catalog; `whyRecommended` is built from the Recommendations
+    that actually reference this framework (their own catalog
+    title/description, reused verbatim); `relatedFrameworks` are
+    frameworks some Recommendation or Opportunity references alongside
+    this one (derived from each entry's own declared `USES`
+    relationships, never a name/category guess); `nextRecommendedFramework`
+    is the first related framework, deterministic; `usedBy`/
+    `relatedCapability`/`leadsTo` (capability navigation) each read data
+    the catalog already holds
+- `app/frameworks/[id]/` - the Framework Explorer page: what it is, why
+  BOIP recommended it, when to use it, expected outcome, common
+  mistakes, related frameworks (clickable), a recommended next
+  framework, and a capability block. Linked from every Recommendation
+  Card's "Learn More"
 - `supabase/migrations/` - schema SQL
