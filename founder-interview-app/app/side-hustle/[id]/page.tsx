@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getOpportunityById } from "@/src/domain/opportunity/library/catalog";
+import { getOpportunityById } from "@/src/domain/opportunity";
 
 export default async function SideHustlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

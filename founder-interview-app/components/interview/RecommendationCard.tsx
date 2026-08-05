@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
-import { resolveFrameworks } from "@/src/domain/framework/registry";
+import { Recommendation } from "@/src/domain/recommendation";
+import { resolveFrameworks } from "@/src/domain/framework";
 
 interface RecommendationCardProps {
   recommendation: Recommendation;

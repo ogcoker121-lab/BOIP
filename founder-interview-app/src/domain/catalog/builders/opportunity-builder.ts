@@ -1,4 +1,4 @@
-import { opportunityLibrary } from "@/src/domain/opportunity/library/catalog";
+import { opportunityLibrary } from "@/src/domain/opportunity";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { opportunityCatalogDefaults } from "../metadata/opportunity-metadata";
 import { deriveOpportunityRelationships } from "../relationships/opportunity-relationships";

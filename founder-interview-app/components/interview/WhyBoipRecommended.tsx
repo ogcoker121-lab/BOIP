@@ -1,4 +1,4 @@
-import { Explanation } from "@/src/domain/decision/models/decision";
+import { Explanation } from "@/src/domain/decision";
 
 interface WhyBoipRecommendedProps {
   explanation: Explanation;

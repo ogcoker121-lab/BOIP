@@ -1,10 +1,7 @@
 import { InterviewAnswers } from "@/types/interview";
-import { buildOpportunityContext } from "@/src/domain/opportunity/context";
-import { buildRouteContext } from "@/src/domain/route-decision/models/route-context";
-import { decideRoute } from "@/src/domain/route-decision/engine/route-decision-engine";
-import { buildOpportunityDiscovery } from "@/src/domain/route-decision/mapper/next-move-mapper";
-import { matchOpportunities } from "@/src/domain/opportunity/library/matching/opportunity-matcher";
-import { buildRecommendations } from "@/src/domain/recommendation/mapper/recommendation-mapper";
+import { buildOpportunityContext, matchOpportunities } from "@/src/domain/opportunity";
+import { buildRouteContext, decideRoute, buildOpportunityDiscovery } from "@/src/domain/route-decision";
+import { buildRecommendations } from "@/src/domain/recommendation";
 import { Decision, DecisionTrace } from "../models/decision";
 import { buildSignals } from "../models/signals";
 import { buildEvaluations } from "../engine/decision-engine";

@@ -1,5 +1,7 @@
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
-import { RouteContext } from "@/src/domain/route-decision/models/route-context";
+import { NextMoveType } from "@/src/domain/shared";
+// Type-only: avoids a runtime circular import with route-decision's own
+// barrel, which itself imports OpportunityContext (type-only) from here.
+import type { RouteContext } from "@/src/domain/route-decision";
 import { Opportunity, OpportunityCapitalBand } from "../models/opportunity";
 import { opportunityLibrary } from "../catalog";
 import { OpportunityMatch, OpportunityMatchResult } from "./opportunity-match";

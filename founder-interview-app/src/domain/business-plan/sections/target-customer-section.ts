@@ -1,4 +1,4 @@
-import { CustomerContext } from "@/src/domain/opportunity/customer-context";
+import { CustomerContext } from "@/src/domain/opportunity";
 import { renderCustomer } from "../templates/customer-template";
 import { BusinessPlanSection } from "../models/business-plan";
 

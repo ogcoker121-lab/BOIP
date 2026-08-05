@@ -1,18 +1,19 @@
-import { evaluateRulesWithTrace } from "@/src/domain/shared/rule-engine";
-import { OpportunityContext } from "@/src/domain/opportunity/context";
+import { evaluateRulesWithTrace } from "@/src/domain/shared";
 import {
+  OpportunityContext,
   customerValidationStrengths,
   customerValidationWatchItems,
-} from "@/src/domain/opportunity/knowledge/customer-validation";
-import { pricingWatchItems as opportunityPricingWatchItems } from "@/src/domain/opportunity/knowledge/pricing";
-import { RouteContext } from "@/src/domain/route-decision/models/route-context";
-import { routeWeightRules } from "@/src/domain/route-decision/knowledge/route-weights";
-import { customerDiscoveryRecommendations } from "@/src/domain/recommendation/knowledge/customer-discovery";
-import { businessModelRecommendations } from "@/src/domain/recommendation/knowledge/business-model";
-import { marketValidationRecommendations } from "@/src/domain/recommendation/knowledge/market-validation";
-import { pricingRecommendations } from "@/src/domain/recommendation/knowledge/pricing";
-import { competitionRecommendations } from "@/src/domain/recommendation/knowledge/competition";
-import { mvpRecommendations } from "@/src/domain/recommendation/knowledge/mvp";
+  pricingWatchItems as opportunityPricingWatchItems,
+} from "@/src/domain/opportunity";
+import { RouteContext, routeWeightRules } from "@/src/domain/route-decision";
+import {
+  customerDiscoveryRecommendations,
+  businessModelRecommendations,
+  marketValidationRecommendations,
+  pricingRecommendations,
+  competitionRecommendations,
+  mvpRecommendations,
+} from "@/src/domain/recommendation";
 import { Evaluation } from "../models/decision";
 
 // Re-evaluates the same knowledge the route-decision, opportunity, and

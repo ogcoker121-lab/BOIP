@@ -1,5 +1,5 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
-import { buildRoadmap } from "@/src/domain/roadmap/builders/roadmap-builder";
+import { Recommendation } from "@/src/domain/recommendation";
+import { buildRoadmap } from "@/src/domain/roadmap";
 import { renderFirst90DayPlan } from "../templates/first-90-day-template";
 import { BusinessPlanSection } from "../models/business-plan";
 import { resolveFrameworkReferences } from "./shared";

@@ -1,6 +1,5 @@
-import { OpportunityContext } from "@/src/domain/opportunity/context";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { OpportunityContext, OpportunityMatch } from "@/src/domain/opportunity";
+import { Recommendation } from "@/src/domain/recommendation";
 import { renderGoToMarket } from "../templates/go-to-market-template";
 import { BusinessPlanSection } from "../models/business-plan";
 import { resolveFrameworkReferences } from "./shared";

@@ -1,4 +1,4 @@
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
+import { OpportunityMatch } from "@/src/domain/opportunity";
 
 interface OpportunityCardProps {
   match: OpportunityMatch;

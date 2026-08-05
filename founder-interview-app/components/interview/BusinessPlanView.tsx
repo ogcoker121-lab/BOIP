@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BusinessPlan, BusinessPlanSection } from "@/src/domain/business-plan/models/business-plan";
+import { BusinessPlan, BusinessPlanSection } from "@/src/domain/business-plan";
 
 interface BusinessPlanViewProps {
   plan: BusinessPlan;

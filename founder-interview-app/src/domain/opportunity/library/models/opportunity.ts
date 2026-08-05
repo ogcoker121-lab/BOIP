@@ -1,4 +1,4 @@
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { NextMoveType } from "@/src/domain/shared";
 
 export type OpportunityKind = "business" | "side_hustle";
 export type OpportunityRisk = "Low" | "Medium" | "High";

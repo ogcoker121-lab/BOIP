@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getOpportunityById } from "@/src/domain/opportunity/library/catalog";
-import { resolveFrameworks } from "@/src/domain/framework/registry";
+import { getOpportunityById } from "@/src/domain/opportunity";
+import { resolveFrameworks } from "@/src/domain/framework";
 
 export default async function BusinessPlanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

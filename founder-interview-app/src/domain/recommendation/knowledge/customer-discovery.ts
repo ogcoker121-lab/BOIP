@@ -1,5 +1,5 @@
-import { Rule } from "@/src/domain/shared/rule-engine";
-import { OpportunityContext } from "@/src/domain/opportunity/context";
+import { Rule } from "@/src/domain/shared";
+import { OpportunityContext } from "@/src/domain/opportunity";
 import { Recommendation } from "../models/recommendation";
 
 // Deterministic BOIP knowledge - data, not code. IDs are permanent once

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { resolveFrameworkPage } from "@/src/domain/framework-explorer/resolver/framework-explorer-resolver";
+import { resolveFrameworkPage } from "@/src/domain/framework-explorer";
 
 // BOIP's first Learning Capability: not a business plan generator, not
 // AI - a deterministic page resolved entirely from the Knowledge

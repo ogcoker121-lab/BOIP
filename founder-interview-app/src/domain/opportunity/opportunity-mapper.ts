@@ -1,5 +1,5 @@
 import { InterviewAnswers } from "@/types/interview";
-import { evaluateRules } from "@/src/domain/shared/rule-engine";
+import { evaluateRules } from "@/src/domain/shared";
 import { OpportunityContext, buildOpportunityContext } from "./context";
 import { OpportunitySnapshot } from "./snapshot-model";
 import { alwaysWatchItems, customerValidationStrengths, customerValidationWatchItems } from "./knowledge/customer-validation";

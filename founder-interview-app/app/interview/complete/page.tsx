@@ -2,10 +2,10 @@
 
 import { useMemo } from "react";
 import OpportunitySnapshot from "@/components/interview/OpportunitySnapshot";
-import { buildOpportunitySnapshot } from "@/src/domain/opportunity/opportunity-mapper";
-import { buildRecommendations } from "@/src/domain/recommendation/mapper/recommendation-mapper";
-import { buildOpportunityDiscovery } from "@/src/domain/route-decision/mapper/next-move-mapper";
-import { buildDecision } from "@/src/domain/decision/mapper/decision-mapper";
+import { buildOpportunitySnapshot } from "@/src/domain/opportunity";
+import { buildRecommendations } from "@/src/domain/recommendation";
+import { buildOpportunityDiscovery } from "@/src/domain/route-decision";
+import { buildDecision } from "@/src/domain/decision";
 import { useInterview } from "../hooks/useInterview";
 
 export default function InterviewCompletePage() {

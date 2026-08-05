@@ -1,4 +1,4 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { Recommendation } from "@/src/domain/recommendation";
 import { Relationship } from "../models/relationship";
 
 // A Recommendation already declares which frameworks it draws on

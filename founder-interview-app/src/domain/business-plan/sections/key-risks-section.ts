@@ -1,5 +1,4 @@
-import { OpportunitySnapshot } from "@/src/domain/opportunity/snapshot-model";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
+import { OpportunitySnapshot, OpportunityMatch } from "@/src/domain/opportunity";
 import { renderRisks } from "../templates/risks-template";
 import { BusinessPlanSection } from "../models/business-plan";
 

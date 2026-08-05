@@ -1,4 +1,4 @@
-import { OpportunitySnapshot } from "@/src/domain/opportunity/snapshot-model";
+import { OpportunitySnapshot } from "@/src/domain/opportunity";
 import { renderBusinessOpportunity } from "../templates/business-opportunity-template";
 import { BusinessPlanSection } from "../models/business-plan";
 

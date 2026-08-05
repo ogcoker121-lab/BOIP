@@ -1,8 +1,5 @@
-import { OpportunityContext } from "@/src/domain/opportunity/context";
-import { OpportunitySnapshot } from "@/src/domain/opportunity/snapshot-model";
-import { CustomerContext } from "@/src/domain/opportunity/customer-context";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
-import { Decision } from "@/src/domain/decision/models/decision";
+import { OpportunityContext, OpportunitySnapshot, CustomerContext, OpportunityMatch } from "@/src/domain/opportunity";
+import { Decision } from "@/src/domain/decision";
 import { BusinessPlanSection } from "../models/business-plan";
 import { buildExecutiveSummarySection } from "../sections/executive-summary-section";
 import { buildBusinessOpportunitySection } from "../sections/business-opportunity-section";

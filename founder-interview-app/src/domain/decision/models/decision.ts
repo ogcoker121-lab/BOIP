@@ -1,6 +1,6 @@
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
+import { NextMoveType } from "@/src/domain/shared";
+import { Recommendation } from "@/src/domain/recommendation";
+import { OpportunityMatch } from "@/src/domain/opportunity";
 
 // An input used during evaluation - a human-readable view of one answer
 // that actually fed a decision, not every raw answer.

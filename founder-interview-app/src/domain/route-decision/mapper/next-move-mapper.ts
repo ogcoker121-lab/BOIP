@@ -1,8 +1,6 @@
 import { InterviewAnswers } from "@/types/interview";
-import { buildOpportunityContext } from "@/src/domain/opportunity/context";
-import { matchOpportunities } from "@/src/domain/opportunity/library/matching/opportunity-matcher";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { buildOpportunityContext, matchOpportunities, OpportunityMatch } from "@/src/domain/opportunity";
+import { NextMoveType } from "@/src/domain/shared";
 import { buildRouteContext, RouteContext } from "../models/route-context";
 import { decideRoute } from "../engine/route-decision-engine";
 

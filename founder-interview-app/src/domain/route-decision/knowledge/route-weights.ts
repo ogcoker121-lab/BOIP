@@ -1,5 +1,4 @@
-import { Rule } from "@/src/domain/shared/rule-engine";
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { Rule, NextMoveType } from "@/src/domain/shared";
 import { RouteContext } from "../models/route-context";
 
 // Deterministic BOIP knowledge - data, not code. The route decision

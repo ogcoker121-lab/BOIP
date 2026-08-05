@@ -1,4 +1,4 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { Recommendation } from "@/src/domain/recommendation";
 import { Roadmap } from "../models/roadmap";
 
 // Buckets the recommendation engine's own priority ordering (v0.4) into
