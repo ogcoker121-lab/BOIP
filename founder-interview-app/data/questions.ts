@@ -2,6 +2,10 @@ import { InterviewQuestion } from "@/types/interview";
 
 // Sourced and simplified from /01_Founder_Interview/BOIP Question Bank.md.
 // This MVP uses one fixed, linear question set (no path branching, no scoring).
+//
+// Every question is tagged with the capability that actually consumes it
+// (see types/interview.ts QuestionCapability) - the interview should never
+// grow into a generic survey; each addition needs a reason.
 export const questions: InterviewQuestion[] = [
   {
     id: "full-name",
@@ -9,6 +13,7 @@ export const questions: InterviewQuestion[] = [
     type: "text",
     required: true,
     placeholder: "Jane Founder",
+    capability: "Founder Discovery",
   },
   {
     id: "occupation",
@@ -17,6 +22,28 @@ export const questions: InterviewQuestion[] = [
     type: "text",
     required: false,
     placeholder: "e.g. Marketing manager, teacher, freelance designer",
+    capability: "Founder Discovery",
+  },
+  {
+    id: "professional-skills",
+    question: "Which of these best describes your strongest professional skills?",
+    description: "Choose up to three.",
+    type: "multi-select",
+    required: true,
+    maxSelections: 3,
+    options: [
+      "Sales & Business Development",
+      "Marketing & Content",
+      "Technology & Software",
+      "Operations & Administration",
+      "Finance",
+      "Creative & Design",
+      "Trades & Technical",
+      "Teaching & Coaching",
+      "Customer Service",
+      "Other",
+    ],
+    capability: "Opportunity Matching",
   },
   {
     id: "business-idea",
@@ -24,6 +51,7 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: true,
     placeholder: "I want to build...",
+    capability: "Founder Discovery",
   },
   {
     id: "problem-solved",
@@ -31,6 +59,7 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: true,
     placeholder: "The problem is...",
+    capability: "Founder Discovery",
   },
   {
     id: "who-affected",
@@ -38,6 +67,7 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: true,
     placeholder: "e.g. Small business owners, new parents, remote teams",
+    capability: "Founder Discovery",
   },
   {
     id: "industry",
@@ -53,6 +83,7 @@ export const questions: InterviewQuestion[] = [
       "Food & beverage",
       "Other",
     ],
+    capability: "Opportunity Matching",
   },
   {
     id: "business-stage",
@@ -67,6 +98,7 @@ export const questions: InterviewQuestion[] = [
       "Early revenue",
       "Established and growing",
     ],
+    capability: "Route Decision",
   },
   {
     id: "revenue-model",
@@ -81,6 +113,7 @@ export const questions: InterviewQuestion[] = [
       "Advertising",
       "Not sure yet",
     ],
+    capability: "Opportunity Matching",
   },
   {
     id: "market-type",
@@ -93,6 +126,7 @@ export const questions: InterviewQuestion[] = [
       "Enterprise / large organisations",
       "Mixed / not sure yet",
     ],
+    capability: "Opportunity Matching",
   },
   {
     id: "market-signal",
@@ -101,6 +135,51 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: false,
     placeholder: "e.g. People keep asking me about this, I've seen similar products sell well",
+    capability: "Founder Discovery",
+  },
+  {
+    id: "preferred-path",
+    question: "Which outcome would you most like BOIP to help you achieve?",
+    type: "select",
+    required: true,
+    options: [
+      "Start a business",
+      "Build a side hustle",
+      "Find a better job",
+      "Explore all options and recommend the best path",
+    ],
+    capability: "Route Decision",
+  },
+  {
+    id: "employment-status",
+    question: "What is your current employment status?",
+    type: "select",
+    required: true,
+    options: [
+      "Employed full-time",
+      "Employed part-time",
+      "Self-employed",
+      "Unemployed or between roles",
+      "Student",
+      "Retired",
+    ],
+    capability: "Route Decision",
+  },
+  {
+    id: "risk-tolerance",
+    question: "How much financial risk are you comfortable taking on right now?",
+    type: "select",
+    required: true,
+    options: ["Very low - I need stability", "Low", "Moderate", "High", "Very high - I'm comfortable with uncertainty"],
+    capability: "Route Decision",
+  },
+  {
+    id: "income-urgency",
+    question: "How soon do you need your next meaningful source of income?",
+    type: "select",
+    required: true,
+    options: ["🚨 Immediately", "📅 Within 3 months", "📈 Within 6-12 months", "🌱 I'm building for the long term"],
+    capability: "Route Decision",
   },
   {
     id: "time-available",
@@ -114,6 +193,7 @@ export const questions: InterviewQuestion[] = [
       "20 to 35 hours",
       "Full-time",
     ],
+    capability: "Route Decision",
   },
   {
     id: "capital-available",
@@ -128,6 +208,7 @@ export const questions: InterviewQuestion[] = [
       "More than £50,000",
       "Prefer not to say",
     ],
+    capability: "Route Decision",
   },
   {
     id: "biggest-obstacle",
@@ -135,6 +216,7 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: true,
     placeholder: "e.g. Not sure where to start, limited time, lack of funding",
+    capability: "Founder Discovery",
   },
   {
     id: "three-year-success",
@@ -143,5 +225,6 @@ export const questions: InterviewQuestion[] = [
     type: "textarea",
     required: false,
     placeholder: "In three years, success looks like...",
+    capability: "Founder Discovery",
   },
 ];
