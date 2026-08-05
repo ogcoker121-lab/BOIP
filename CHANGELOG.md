@@ -2,7 +2,7 @@
 
 All notable changes to BOIP are documented in this file.
 
-## v0.9.0 (pending release)
+## v0.9.0
 
 ### Added
 
@@ -68,7 +68,7 @@ All notable changes to BOIP are documented in this file.
 
 - N/A
 
-## v0.8.0 (pending release)
+## v0.8.0
 
 ### Added
 
@@ -121,7 +121,7 @@ All notable changes to BOIP are documented in this file.
 
 - N/A
 
-## v0.7.0 (pending release)
+## v0.7.0
 
 ### Added
 
