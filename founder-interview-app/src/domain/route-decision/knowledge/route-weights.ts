@@ -33,20 +33,39 @@ export const routeWeightRules: Rule<RouteContext, RouteWeightContribution>[] = [
   // preference is honored unconditionally by the engine (never bad advice
   // to defer to), not weighted against other signals.
   {
+    id: "RULE-001",
     when: { preferredPath: "business" },
     then: [{ route: "business_plan", weight: 4, reason: "Stated preference: start a business" }],
   },
   {
+    id: "RULE-002",
     when: { preferredPath: "side_hustle" },
     then: [{ route: "side_hustle", weight: 4, reason: "Stated preference: build a side hustle" }],
   },
 
   // Independent single-factor nudges.
-  { when: { riskBand: "high" }, then: [{ route: "business_plan", weight: 2, reason: "High risk tolerance" }] },
-  { when: { riskBand: "moderate" }, then: [{ route: "side_hustle", weight: 1, reason: "Moderate risk tolerance" }] },
-  { when: { urgencyBand: "flexible" }, then: [{ route: "business_plan", weight: 2, reason: "No immediate income pressure" }] },
-  { when: { urgencyBand: "soon" }, then: [{ route: "side_hustle", weight: 2, reason: "Needs income within a few months" }] },
   {
+    id: "RULE-003",
+    when: { riskBand: "high" },
+    then: [{ route: "business_plan", weight: 2, reason: "High risk tolerance" }],
+  },
+  {
+    id: "RULE-004",
+    when: { riskBand: "moderate" },
+    then: [{ route: "side_hustle", weight: 1, reason: "Moderate risk tolerance" }],
+  },
+  {
+    id: "RULE-005",
+    when: { urgencyBand: "flexible" },
+    then: [{ route: "business_plan", weight: 2, reason: "No immediate income pressure" }],
+  },
+  {
+    id: "RULE-006",
+    when: { urgencyBand: "soon" },
+    then: [{ route: "side_hustle", weight: 2, reason: "Needs income within a few months" }],
+  },
+  {
+    id: "RULE-007",
     when: { businessReadiness: "strong" },
     then: [
       { route: "business_plan", weight: 3, reason: "Business readiness is strong" },
@@ -54,6 +73,7 @@ export const routeWeightRules: Rule<RouteContext, RouteWeightContribution>[] = [
     ],
   },
   {
+    id: "RULE-008",
     when: { businessReadiness: "moderate" },
     then: [{ route: "side_hustle", weight: 2, reason: "Business readiness is moderate - worth testing first" }],
   },
@@ -63,30 +83,37 @@ export const routeWeightRules: Rule<RouteContext, RouteWeightContribution>[] = [
   // fallback differs depending on whether the founder already has income
   // from employment.
   {
+    id: "RULE-009",
     when: { riskBand: "low", businessReadiness: "weak" },
     then: [{ route: "business_plan", weight: -4, reason: "Low risk tolerance combined with weak business readiness" }],
   },
   {
+    id: "RULE-010",
     when: { urgencyBand: "immediate", isCurrentlyEmployed: true },
     then: [{ route: "hybrid_path", weight: 3, reason: "Needs income soon but already has employment income" }],
   },
   {
+    id: "RULE-011",
     when: { urgencyBand: "immediate", isCurrentlyEmployed: false },
     then: [{ route: "job_search", weight: 4, reason: "Needs income immediately and has no current employment" }],
   },
   {
+    id: "RULE-012",
     when: { businessReadiness: "weak", isCurrentlyEmployed: true },
     then: [{ route: "hybrid_path", weight: 2, reason: "Weak business readiness, but currently employed" }],
   },
   {
+    id: "RULE-013",
     when: { businessReadiness: "weak", isCurrentlyEmployed: false },
     then: [{ route: "job_search", weight: 2, reason: "Weak business readiness and not currently employed" }],
   },
   {
+    id: "RULE-014",
     when: { riskBand: "low", isCurrentlyEmployed: true },
     then: [{ route: "hybrid_path", weight: 1, reason: "Low risk tolerance, but currently employed" }],
   },
   {
+    id: "RULE-015",
     when: { riskBand: "low", isCurrentlyEmployed: false },
     then: [{ route: "job_search", weight: 1, reason: "Low risk tolerance and not currently employed" }],
   },

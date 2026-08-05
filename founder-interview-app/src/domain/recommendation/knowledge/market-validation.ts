@@ -4,6 +4,7 @@ import { Recommendation } from "../models/recommendation";
 
 export const marketValidationRecommendations: Rule<OpportunityContext, Recommendation>[] = [
   {
+    id: "RULE-019",
     when: { hasMarketSignal: false },
     then: [
       {

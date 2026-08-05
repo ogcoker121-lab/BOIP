@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { NextMove } from "@/src/domain/route-decision/mapper/next-move-mapper";
+import { Explanation } from "@/src/domain/decision/models/decision";
+import WhyBoipRecommended from "./WhyBoipRecommended";
 
 interface NextMoveCardProps {
   nextMove: NextMove;
+  explanation: Explanation;
 }
 
-export default function NextMoveCard({ nextMove }: NextMoveCardProps) {
+export default function NextMoveCard({ nextMove, explanation }: NextMoveCardProps) {
   return (
     <section className="rounded-lg border border-zinc-900 p-5 dark:border-zinc-50">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Your Next Move</h2>
@@ -28,6 +31,8 @@ export default function NextMoveCard({ nextMove }: NextMoveCardProps) {
           </Link>
         )}
       </div>
+
+      <WhyBoipRecommended explanation={explanation} />
     </section>
   );
 }

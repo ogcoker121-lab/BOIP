@@ -7,6 +7,7 @@ export const competitionRecommendations: Rule<OpportunityContext, Recommendation
   // true over zero keys) - correct here, since the interview never asks
   // about competitors at all, so this is always relevant today.
   {
+    id: "RULE-021",
     when: {},
     then: [
       {
