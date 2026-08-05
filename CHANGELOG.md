@@ -2,7 +2,7 @@
 
 All notable changes to BOIP are documented in this file.
 
-## v0.6.0 (pending release)
+## v0.6.0
 
 ### Added
 
