@@ -8,10 +8,10 @@ All notable changes to BOIP are documented in this file.
 
 - Business Plan Generator: a founder who completes the interview now
   gets a complete, deterministic Business Plan - Executive Summary,
-  Business Opportunity, Customer, Revenue Model, Go-to-Market, First
-  90-Day Plan, Risks, and Recommended Frameworks - assembled entirely
-  from BOIP's existing knowledge. No AI, no LLMs, no text generation
-  APIs, nothing invented
+  Business Opportunity, Target Customer, Revenue Model, Go-to-Market
+  Strategy, First 90-Day Action Plan, Key Risks, and Recommended
+  Frameworks - assembled entirely from BOIP's existing knowledge. No
+  AI, no LLMs, no text generation APIs, nothing invented
 - `app/interview/business-plan/` - the plan page, reachable via a new
   "View Full Business Plan" link on the Opportunity Snapshot
 - Every section that references a framework links "Learn More" to its
@@ -28,10 +28,22 @@ All notable changes to BOIP are documented in this file.
   section - no component or section builder holds a hard-coded
   paragraph. Every template only assembles text that already exists
   (the Opportunity Snapshot's founderSummary, the Decision's
-  explanation, interview answers, matched-opportunity fields)
+  explanation, CustomerContext, matched-opportunity fields)
 - `sections/`: one builder per section, each deriving its framework
   references from whichever recommendations/opportunity actually
   applied - never hardcoded ids
+- New `src/domain/opportunity/customer-context.ts` - `CustomerContext`
+  (customer, problem, marketSignal) + `buildCustomerContext()`. Target
+  Customer consumes this instead of reading interview answers directly,
+  so the domain follows Interview -> Opportunity -> Business Plan;
+  `buildBusinessPlan()`'s mapper is the only place in the domain that
+  touches `InterviewAnswers`
+- New domain, `src/domain/roadmap/` (`models/`, `builders/`) -
+  `buildRoadmap()` buckets the recommendation engine's own priority
+  ordering (Critical/High -> Days 1-30, Medium -> Days 31-60, Low ->
+  Days 61-90) into a reusable `Roadmap`, extracted out of Business Plan
+  so a future Founder Report, Executive Dashboard, mobile app, or AI
+  Coach can reuse the same roadmap without rebuilding it
 - `mapper/business-plan-mapper.ts`'s `buildBusinessPlan()` reuses
   `buildOpportunitySnapshot()` (v0.3) and `buildDecisionWithTrace()`
   (v0.6) exactly as every other consumer does

@@ -18,9 +18,9 @@ use it, expected outcome, common mistakes, and related frameworks - BOIP's
 first Learning Capability, built entirely from the Knowledge Catalog
 (v0.8). A founder who completes the interview now also gets a complete,
 deterministic Business Plan - Executive Summary, Business Opportunity,
-Customer, Revenue Model, Go-to-Market, First 90-Day Plan, Risks, and
-Recommended Frameworks - assembled entirely from BOIP's existing
-knowledge, no AI (v0.9).
+Target Customer, Revenue Model, Go-to-Market Strategy, First 90-Day
+Action Plan, Key Risks, and Recommended Frameworks - assembled entirely
+from BOIP's existing knowledge, no AI (v0.9).
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -92,9 +92,10 @@ falls back to the in-memory repository automatically.
   server-rendered, no client state
 - `app/interview/business-plan/` - the Business Plan Generator (v0.9): a
   complete, deterministic plan (Executive Summary, Business Opportunity,
-  Customer, Revenue Model, Go-to-Market, First 90-Day Plan, Risks,
-  Recommended Frameworks) assembled from the founder's own interview
-  answers - `buildBusinessPlan()`, reading the same in-memory answers
+  Target Customer, Revenue Model, Go-to-Market Strategy, First 90-Day
+  Action Plan, Key Risks, Recommended Frameworks) assembled from the
+  founder's own interview answers - `buildBusinessPlan()`, reading the
+  same in-memory answers
   `app/interview/complete/` already reads. Reachable via a "View Full
   Business Plan" link on the Opportunity Snapshot
 - `lib/interview-repository.ts` - the `InterviewRepository` interface, an
@@ -119,6 +120,13 @@ falls back to the in-memory repository automatically.
   - `context.ts` - `OpportunityContext` plus `buildOpportunityContext()`,
     shared by every other domain so all of them read the interview
     identically
+  - `customer-context.ts` - `CustomerContext` (customer, problem,
+    marketSignal) plus `buildCustomerContext()` (v0.9): a human-readable
+    view of the same three answers `OpportunityContext` already reduces
+    to booleans (hasCustomer/hasProblem/hasMarketSignal), for consumers
+    that need the text, not just whether it exists. The Business Plan's
+    Target Customer section reads this instead of interview answers
+    directly
   - `knowledge/customer-validation.ts`, `knowledge/pricing.ts` -
     deterministic strengths/watch-list signals, as data
   - `snapshot-model.ts`, `opportunity-mapper.ts` - `OpportunitySnapshot`
@@ -252,29 +260,43 @@ falls back to the in-memory repository automatically.
   - `models/business-plan.ts` - `BusinessPlan` (id, title, sections[],
     metadata), `BusinessPlanSection` (its own object per section: id,
     title, content, recommendedFrameworks). `BusinessPlan.id` (`BP-xxx`)
-    is a runtime id, same convention as Decision's `DEC-xxx`
+    is a runtime id, same convention as Decision's `DEC-xxx`. Canonical
+    section ids/titles: `executive-summary`, `business-opportunity`,
+    `target-customer`, `revenue-model`, `go-to-market-strategy`,
+    `first-90-day-action-plan`, `key-risks`, `recommended-frameworks`
   - `templates/` - one reusable, parameterized text-rendering function
     per section - no component or section builder holds a hard-coded
     paragraph. Every template only assembles text that already exists:
     the Opportunity Snapshot's founderSummary (v0.3) and the Decision's
     explanation (v0.6) for Executive Summary, the Snapshot's own
-    overview/strengths/watchList for Business Opportunity and Risks,
-    interview answers for Customer, matched-Opportunity fields for
-    Revenue Model and Go-to-Market
+    overview/strengths/watchList for Business Opportunity and Key
+    Risks, `CustomerContext` for Target Customer, matched-Opportunity
+    fields for Revenue Model and Go-to-Market Strategy
   - `sections/` - one builder per section, each gathering the right
     inputs and deriving its framework references from whichever
     recommendations/opportunity actually applied - never hardcoded ids.
     `shared.ts`'s `resolveFrameworkReferences()` resolves every one of
     them through the Knowledge Catalog, the same rule the Framework
-    Explorer follows
+    Explorer follows. No section reads `InterviewAnswers` directly -
+    Target Customer consumes `CustomerContext`
+    (`src/domain/opportunity/customer-context.ts`), keeping Interview
+    -> Opportunity -> Business Plan rather than Interview -> Business
+    Plan
   - `builders/business-plan-builder.ts` - `buildBusinessPlanSections()`:
-    Version 1's eight sections in a fixed order (Executive Summary,
-    Business Opportunity, Customer, Revenue Model, Go-to-Market, First
-    90-Day Plan - buckets the recommendation engine's own priority
-    ordering into day ranges, not a new sort - Risks, Recommended
-    Frameworks)
-  - `mapper/business-plan-mapper.ts` - `buildBusinessPlan()`, pure;
-    reuses `buildOpportunitySnapshot()` (v0.3) and
-    `buildDecisionWithTrace()` (v0.6) exactly as every other consumer
-    does, never recomputes route/opportunities/scores/recommendations
+    Version 1's eight sections in a fixed, canonical order. First
+    90-Day Action Plan consumes a `Roadmap`
+    (`src/domain/roadmap/`) rather than building one itself
+  - `mapper/business-plan-mapper.ts` - `buildBusinessPlan()`, pure; the
+    only place in the domain that touches `InterviewAnswers`. Reuses
+    `buildOpportunitySnapshot()` (v0.3) and `buildDecisionWithTrace()`
+    (v0.6) exactly as every other consumer does, never recomputes
+    route/opportunities/scores/recommendations
+- `src/domain/roadmap/` - a time-bucketed view of recommended actions,
+  extracted out of `business-plan/` so it isn't specific to one
+  consumer: `buildRoadmap()` buckets the recommendation engine's own
+  priority ordering (Critical/High -> Days 1-30, Medium -> Days 31-60,
+  Low -> Days 61-90) into a reusable `Roadmap`. Not a re-score - a
+  structural translation of an existing enum into a day range. Meant to
+  be reused later by a Founder Report, an Executive Dashboard, the
+  mobile app, or an AI Coach without rebuilding this bucketing
 - `supabase/migrations/` - schema SQL
