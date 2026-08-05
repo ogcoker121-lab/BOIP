@@ -1,19 +1,31 @@
 import Link from "next/link";
 import { OpportunitySnapshot as OpportunitySnapshotData } from "@/src/domain/opportunity/snapshot-model";
 import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
+import { NextMove } from "@/src/domain/route-decision/mapper/next-move-mapper";
 import FounderSummary from "./FounderSummary";
 import OpportunityOverview from "./OpportunityOverview";
 import StrengthsList from "./StrengthsList";
 import WatchList from "./WatchList";
 import RecommendedActions from "./RecommendedActions";
+import TopOpportunities from "./TopOpportunities";
+import NextMoveCard from "./NextMoveCard";
 
 interface OpportunitySnapshotProps {
   snapshot: OpportunitySnapshotData;
   recommendations: Recommendation[];
+  matches: OpportunityMatch[];
+  nextMove: NextMove;
   onRestart: () => void;
 }
 
-export default function OpportunitySnapshot({ snapshot, recommendations, onRestart }: OpportunitySnapshotProps) {
+export default function OpportunitySnapshot({
+  snapshot,
+  recommendations,
+  matches,
+  nextMove,
+  onRestart,
+}: OpportunitySnapshotProps) {
   return (
     <div>
       <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Your Opportunity Snapshot</h1>
@@ -21,11 +33,16 @@ export default function OpportunitySnapshot({ snapshot, recommendations, onResta
         Based on the answers you just gave - no AI, just a first structured read on your idea.
       </p>
 
+      <div className="mt-6">
+        <NextMoveCard nextMove={nextMove} />
+      </div>
+
       <div className="mt-6 space-y-6 divide-y divide-zinc-200 [&>section:not(:first-child)]:pt-6 dark:divide-zinc-800">
         <FounderSummary sentences={snapshot.founderSummary} />
         <OpportunityOverview overview={snapshot.overview} />
         <StrengthsList items={snapshot.strengths} />
         <WatchList items={snapshot.watchList} />
+        <TopOpportunities matches={matches} />
         <RecommendedActions recommendations={recommendations} />
       </div>
 
