@@ -9,7 +9,10 @@ next actions (v0.4), a named business/side-hustle/job/hybrid/skill-path
 recommendation with one clickable next step (v0.5), and an optional "Why
 BOIP recommended this" explanation tracing that recommendation back to the
 interview answers and knowledge rules that produced it (v0.6) - no AI
-anywhere.
+anywhere. Under the hood, every permanent object (frameworks,
+recommendations, opportunities, rules) is now resolvable through one
+Knowledge Catalog - BOIP's canonical identity layer, not a founder-facing
+feature (v0.7).
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -155,4 +158,32 @@ falls back to the in-memory repository automatically.
   - `mapper/decision-mapper.ts` - `buildDecisionWithTrace()`, pure,
     computes `{ decision, trace }` together; `buildDecision()` is a thin
     wrapper returning just `Decision`, the UI's only need
+- `src/domain/catalog/` - BOIP's canonical identity layer. No UI, a
+  platform capability: domains own behaviour, the catalog owns metadata
+  - `models/catalog-entry.ts` - `CatalogEntry` (id, type, title,
+    description, owner, capability, version, status, relationships,
+    schemaVersion) and `createCatalogEntry()`, so every builder stamps
+    `schemaVersion` consistently
+  - `models/relationship.ts` - `Relationship` (sourceId, targetId, type)
+  - `metadata/` - only what genuinely doesn't exist elsewhere (framework
+    capability per `FW-xxx`; uniform owner/version/status defaults for
+    Recommendation/Opportunity/Rule) - never a field a domain already has
+  - `builders/` - one per type (`framework-builder.ts`,
+    `recommendation-builder.ts`, `opportunity-builder.ts`,
+    `rule-builder.ts`), each reading its source domain's own existing
+    data (`frameworkRegistry`, recommendation knowledge,
+    `opportunityLibrary`, the three rule-knowledge groups
+    `decision-engine.ts` already evaluates) rather than a second copy
+  - `relationships/` - derivation functions, not hardcoded data: `REC-xxx
+    USES FW-xxx` and `OPP-xxx USES FW-xxx` from each object's own
+    `frameworkReferences`; `RULE-xxx GENERATES REC-xxx` from a
+    recommendation rule's own `then`. Nothing is guessed - every
+    relationship traces to a field that already existed
+  - `resolver/catalog-resolver.ts` - `resolveCatalogEntry(id)` /
+    `resolveCatalogEntries(ids)`, the one place any permanent id
+    resolves to full metadata; builds the merged catalog once
+  - `index.ts` - the domain's public surface for future consumers
+    (report generator, AI enrichment, Framework Explorer, knowledge
+    graph). No existing domain has been migrated to resolve ids through
+    it yet - this release only builds the identity layer itself
 - `supabase/migrations/` - schema SQL
