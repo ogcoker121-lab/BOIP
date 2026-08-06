@@ -1,4 +1,4 @@
-import { Roadmap } from "@/src/domain/roadmap/models/roadmap";
+import { Roadmap } from "@/src/domain/roadmap";
 
 // Renders whatever roadmap it's given - bucketing is the roadmap
 // domain's job (src/domain/roadmap/), not this template's. Business

@@ -1,5 +1,4 @@
-import { evaluateRules } from "@/src/domain/shared/rule-engine";
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { evaluateRules, NextMoveType } from "@/src/domain/shared";
 import { RouteContext } from "../models/route-context";
 import { routeWeightRules } from "../knowledge/route-weights";
 

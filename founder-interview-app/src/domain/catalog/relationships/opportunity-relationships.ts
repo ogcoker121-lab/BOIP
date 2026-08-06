@@ -1,4 +1,4 @@
-import { Opportunity } from "@/src/domain/opportunity/library/models/opportunity";
+import { Opportunity } from "@/src/domain/opportunity";
 import { Relationship } from "../models/relationship";
 
 // Same pattern as recommendation-relationships.ts: Opportunity already

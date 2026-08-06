@@ -1,15 +1,17 @@
-import { routeWeightRules } from "@/src/domain/route-decision/knowledge/route-weights";
-import { customerDiscoveryRecommendations } from "@/src/domain/recommendation/knowledge/customer-discovery";
-import { businessModelRecommendations } from "@/src/domain/recommendation/knowledge/business-model";
-import { marketValidationRecommendations } from "@/src/domain/recommendation/knowledge/market-validation";
-import { pricingRecommendations } from "@/src/domain/recommendation/knowledge/pricing";
-import { competitionRecommendations } from "@/src/domain/recommendation/knowledge/competition";
-import { mvpRecommendations } from "@/src/domain/recommendation/knowledge/mvp";
+import { routeWeightRules } from "@/src/domain/route-decision";
+import {
+  customerDiscoveryRecommendations,
+  businessModelRecommendations,
+  marketValidationRecommendations,
+  pricingRecommendations,
+  competitionRecommendations,
+  mvpRecommendations,
+} from "@/src/domain/recommendation";
 import {
   customerValidationStrengths,
   customerValidationWatchItems,
-} from "@/src/domain/opportunity/knowledge/customer-validation";
-import { pricingWatchItems as opportunityPricingWatchItems } from "@/src/domain/opportunity/knowledge/pricing";
+  pricingWatchItems as opportunityPricingWatchItems,
+} from "@/src/domain/opportunity";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { ruleCatalogMetadataBySource } from "../metadata/rule-metadata";
 import { deriveRuleGeneratesRelationship } from "../relationships/rule-relationships";

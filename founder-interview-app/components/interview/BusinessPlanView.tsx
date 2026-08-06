@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BusinessPlan, BusinessPlanSection } from "@/src/domain/business-plan/models/business-plan";
+import { BusinessPlan, BusinessPlanSection } from "@/src/domain/business-plan";
 
 interface BusinessPlanViewProps {
   plan: BusinessPlan;
@@ -42,6 +42,7 @@ function SectionBlock({ section }: { section: BusinessPlanSection }) {
               {framework.title}{" "}
               <Link
                 href={`/frameworks/${framework.id}`}
+                aria-label={`Learn more about ${framework.title}`}
                 className="font-medium text-zinc-700 underline-offset-2 hover:underline dark:text-zinc-300"
               >
                 Learn More

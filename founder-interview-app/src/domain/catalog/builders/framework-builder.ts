@@ -1,4 +1,4 @@
-import { frameworkRegistry } from "@/src/domain/framework/registry";
+import { frameworkRegistry } from "@/src/domain/framework";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { frameworkCatalogMetadata } from "../metadata/framework-metadata";
 

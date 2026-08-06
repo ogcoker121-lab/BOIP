@@ -1,10 +1,12 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
-import { customerDiscoveryRecommendations } from "@/src/domain/recommendation/knowledge/customer-discovery";
-import { businessModelRecommendations } from "@/src/domain/recommendation/knowledge/business-model";
-import { marketValidationRecommendations } from "@/src/domain/recommendation/knowledge/market-validation";
-import { pricingRecommendations } from "@/src/domain/recommendation/knowledge/pricing";
-import { competitionRecommendations } from "@/src/domain/recommendation/knowledge/competition";
-import { mvpRecommendations } from "@/src/domain/recommendation/knowledge/mvp";
+import {
+  Recommendation,
+  customerDiscoveryRecommendations,
+  businessModelRecommendations,
+  marketValidationRecommendations,
+  pricingRecommendations,
+  competitionRecommendations,
+  mvpRecommendations,
+} from "@/src/domain/recommendation";
 import { CatalogEntry, createCatalogEntry } from "../models/catalog-entry";
 import { recommendationCatalogDefaults } from "../metadata/recommendation-metadata";
 import { deriveRecommendationRelationships } from "../relationships/recommendation-relationships";

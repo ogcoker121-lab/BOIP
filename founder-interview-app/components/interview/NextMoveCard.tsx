@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { NextMove } from "@/src/domain/route-decision/mapper/next-move-mapper";
-import { Explanation } from "@/src/domain/decision/models/decision";
+import { NextMove } from "@/src/domain/route-decision";
+import { Explanation } from "@/src/domain/decision";
 import WhyBoipRecommended from "./WhyBoipRecommended";
 
 interface NextMoveCardProps {

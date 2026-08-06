@@ -1,4 +1,4 @@
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { NextMoveType } from "@/src/domain/shared";
 
 // A framework a section points at - id + title only, resolved through
 // the Knowledge Catalog. Never a second copy of framework guidance;

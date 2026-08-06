@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { getOpportunityById } from "@/src/domain/opportunity/library/catalog";
+import { getOpportunityById, opportunityLibrary } from "@/src/domain/opportunity";
+import EmptyState from "@/components/shared/EmptyState";
+
+// Every opportunity id is known at build time (the curated Starter
+// Opportunity Library, not user content) - see the matching comment in
+// app/frameworks/[id]/page.tsx for why this is safe to pre-render.
+export function generateStaticParams() {
+  return opportunityLibrary.map((opportunity) => ({ id: opportunity.id }));
+}
 
 export default async function SideHustlePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -8,13 +16,11 @@ export default async function SideHustlePage({ params }: { params: Promise<{ id:
   if (!opportunity) {
     return (
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-16">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Opportunity not found</h1>
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-          We couldn&apos;t find an opportunity with the id &ldquo;{id}&rdquo;.
-        </p>
-        <Link href="/" className="mt-6 inline-block text-sm font-medium text-zinc-900 underline dark:text-zinc-50">
-          Back to home
-        </Link>
+        <EmptyState
+          title="Opportunity not found"
+          message={`We couldn't find an opportunity with the id “${id}”.`}
+          action={{ href: "/", label: "Back to home" }}
+        />
       </main>
     );
   }

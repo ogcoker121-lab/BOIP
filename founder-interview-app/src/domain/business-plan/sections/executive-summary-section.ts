@@ -1,5 +1,5 @@
-import { OpportunitySnapshot } from "@/src/domain/opportunity/snapshot-model";
-import { Decision } from "@/src/domain/decision/models/decision";
+import { OpportunitySnapshot } from "@/src/domain/opportunity";
+import { Decision } from "@/src/domain/decision";
 import { renderExecutiveSummary } from "../templates/executive-summary-template";
 import { BusinessPlanSection } from "../models/business-plan";
 

@@ -1,6 +1,6 @@
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
-import { routeWeightRules } from "@/src/domain/route-decision/knowledge/route-weights";
+import { NextMoveType } from "@/src/domain/shared";
+import { OpportunityMatch } from "@/src/domain/opportunity";
+import { routeWeightRules } from "@/src/domain/route-decision";
 import { Evaluation, Explanation } from "../models/decision";
 
 // Human-readable label per route - the same kind of static lookup

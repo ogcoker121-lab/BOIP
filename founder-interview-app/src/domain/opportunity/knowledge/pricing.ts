@@ -1,4 +1,4 @@
-import { Rule } from "@/src/domain/shared/rule-engine";
+import { Rule } from "@/src/domain/shared";
 import { OpportunityContext } from "../context";
 
 export const pricingWatchItems: Rule<OpportunityContext, string>[] = [

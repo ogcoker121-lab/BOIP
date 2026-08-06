@@ -20,7 +20,15 @@ first Learning Capability, built entirely from the Knowledge Catalog
 deterministic Business Plan - Executive Summary, Business Opportunity,
 Target Customer, Revenue Model, Go-to-Market Strategy, First 90-Day
 Action Plan, Key Risks, and Recommended Frameworks - assembled entirely
-from BOIP's existing knowledge, no AI (v0.9).
+from BOIP's existing knowledge, no AI (v0.9). v0.9.1 (Platform
+Hardening) added no founder-facing capability: every domain now has a
+tested, enforced public API (`src/domain/<name>/index.ts`, with an
+ESLint rule and dependency tests protecting domain boundaries), a
+Vitest + Playwright test suite covering every domain and the real
+end-to-end founder workflow, shared Loading/EmptyState/ErrorState
+components, an accessibility audit and fixes, and a small,
+low-risk static-rendering performance pass - see `docs/ARCHITECTURE.md`,
+`docs/ACCESSIBILITY_AUDIT.md`, and `CONTRIBUTING.md`.
 
 Scope is intentionally narrow: no AI, no auth, no scoring, no payments, no
 analytics, no reports, no live search.
@@ -51,6 +59,21 @@ Both env vars are server-only - the app never talks to Supabase from the
 browser, only through its own API routes - so if either is missing the app
 falls back to the in-memory repository automatically.
 
+## Development
+
+```bash
+npm run lint            # ESLint, including the domain-boundary rule
+npm run build            # production build + TypeScript check
+npm test                 # Vitest - domain tests + architecture tests
+npm run test:coverage    # same, with a coverage report (visibility only, no threshold)
+npm run test:e2e         # Playwright, against a production build
+```
+
+See `CONTRIBUTING.md` for the full contributor guide (domain
+boundaries, where logic goes, test/commit conventions) and
+`docs/ARCHITECTURE.md` for the architectural principles behind the
+structure below.
+
 ## Structure
 
 - `data/questions.ts` - the 19 interview questions (data, not UI). Every
@@ -72,6 +95,14 @@ falls back to the in-memory repository automatically.
   composes all of them (now with a "View Full Business Plan" link), and
   BusinessPlanView (renders a BusinessPlan's sections - no prose of its
   own, every line is already templated by `src/domain/business-plan/`)
+- `components/shared/` (v0.9.1) - `Loading`, `EmptyState`, `ErrorState`:
+  the three shared states any page needs. `EmptyState` is the UI half
+  of the null -> empty-state convention every domain resolver already
+  follows (a missing id renders this, never a thrown error) - it
+  replaced three near-identical hand-written "not found" blocks across
+  `app/frameworks/[id]`, `app/business-plan/[id]`, `app/side-hustle/[id]`.
+  `ErrorState` backs `app/error.tsx`, a route error boundary for
+  genuinely unexpected crashes - domains still never throw
 - `app/interview/context/InterviewContext.tsx` - the interview wizard's
   state, scoped to `app/interview/*` only, plus persistence (restore on
   mount, auto-save, submit)
@@ -299,4 +330,25 @@ falls back to the in-memory repository automatically.
   structural translation of an existing enum into a day range. Meant to
   be reused later by a Founder Report, an Executive Dashboard, the
   mobile app, or an AI Coach without rebuilding this bucketing
+- `src/domain/<name>/index.ts` (v0.9.1) - every domain's one public
+  barrel; importing anything else inside a domain is an ESLint error
+  with no exceptions (`eslint.config.mjs`), checked independently by
+  `src/architecture.test.ts`. See `docs/ARCHITECTURE.md`
+- `src/domain/**/*.test.ts` (v0.9.1) - one Vitest suite per domain,
+  co-located with the code it tests, covering each domain's public
+  entry point plus small pure functions worth testing in isolation
+- `e2e/` (v0.9.1) - Playwright specs covering the real founder
+  workflow end to end (`founder-journey.spec.ts`,
+  `framework-explorer.spec.ts`) against a production build, plus a
+  shared `helpers.ts` that walks the actual interview question set
+  rather than shortcutting it
+- `docs/ARCHITECTURE.md` (v0.9.1) - the architectural principles and
+  rules behind this structure (the shared rule engine, permanent vs.
+  runtime ids, domain boundary enforcement, testing strategy)
+- `docs/ACCESSIBILITY_AUDIT.md` (v0.9.1) - the full accessibility audit
+  (keyboard, focus, semantics, ARIA, screen reader, contrast) and what
+  was fixed
+- `CONTRIBUTING.md` (v0.9.1) - the contributor guide: setup, required
+  checks before a PR, domain boundaries, where logic goes, test/commit
+  conventions
 - `supabase/migrations/` - schema SQL

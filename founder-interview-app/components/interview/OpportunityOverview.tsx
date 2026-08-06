@@ -1,4 +1,4 @@
-import { OpportunityOverview as OpportunityOverviewData } from "@/src/domain/opportunity/snapshot-model";
+import { OpportunityOverview as OpportunityOverviewData } from "@/src/domain/opportunity";
 
 interface OpportunityOverviewProps {
   overview: OpportunityOverviewData;

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import BusinessPlanView from "@/components/interview/BusinessPlanView";
-import { buildBusinessPlan } from "@/src/domain/business-plan/mapper/business-plan-mapper";
+import { buildBusinessPlan } from "@/src/domain/business-plan";
 import { useInterview } from "../hooks/useInterview";
 
 // Reads the same in-memory interview answers /interview/complete already

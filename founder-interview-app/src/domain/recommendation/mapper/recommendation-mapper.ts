@@ -1,5 +1,5 @@
 import { InterviewAnswers } from "@/types/interview";
-import { buildOpportunityContext } from "@/src/domain/opportunity/context";
+import { buildOpportunityContext } from "@/src/domain/opportunity";
 import { evaluateRecommendations } from "../engine/recommendation-engine";
 import { Recommendation } from "../models/recommendation";
 

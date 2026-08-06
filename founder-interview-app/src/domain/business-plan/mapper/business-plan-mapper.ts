@@ -1,8 +1,6 @@
 import { InterviewAnswers } from "@/types/interview";
-import { buildOpportunityContext } from "@/src/domain/opportunity/context";
-import { buildOpportunitySnapshot } from "@/src/domain/opportunity/opportunity-mapper";
-import { buildCustomerContext } from "@/src/domain/opportunity/customer-context";
-import { buildDecisionWithTrace } from "@/src/domain/decision/mapper/decision-mapper";
+import { buildOpportunityContext, buildOpportunitySnapshot, buildCustomerContext } from "@/src/domain/opportunity";
+import { buildDecisionWithTrace } from "@/src/domain/decision";
 import { BusinessPlan } from "../models/business-plan";
 import { buildBusinessPlanSections } from "../builders/business-plan-builder";
 

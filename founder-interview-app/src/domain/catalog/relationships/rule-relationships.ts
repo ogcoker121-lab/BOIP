@@ -1,4 +1,4 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { Recommendation } from "@/src/domain/recommendation";
 import { Relationship } from "../models/relationship";
 
 // Every recommendation-knowledge rule's `then` is exactly one

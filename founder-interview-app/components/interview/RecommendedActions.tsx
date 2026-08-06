@@ -1,4 +1,4 @@
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
+import { Recommendation } from "@/src/domain/recommendation";
 import RecommendationCard from "./RecommendationCard";
 
 interface RecommendedActionsProps {

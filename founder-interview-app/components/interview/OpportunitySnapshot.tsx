@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { OpportunitySnapshot as OpportunitySnapshotData } from "@/src/domain/opportunity/snapshot-model";
-import { Recommendation } from "@/src/domain/recommendation/models/recommendation";
-import { OpportunityMatch } from "@/src/domain/opportunity/library/matching/opportunity-match";
-import { NextMove } from "@/src/domain/route-decision/mapper/next-move-mapper";
-import { Explanation } from "@/src/domain/decision/models/decision";
+import { OpportunitySnapshot as OpportunitySnapshotData, OpportunityMatch } from "@/src/domain/opportunity";
+import { Recommendation } from "@/src/domain/recommendation";
+import { NextMove } from "@/src/domain/route-decision";
+import { Explanation } from "@/src/domain/decision";
 import FounderSummary from "./FounderSummary";
 import OpportunityOverview from "./OpportunityOverview";
 import StrengthsList from "./StrengthsList";

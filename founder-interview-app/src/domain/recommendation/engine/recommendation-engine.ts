@@ -1,5 +1,5 @@
-import { evaluateRules } from "@/src/domain/shared/rule-engine";
-import { OpportunityContext } from "@/src/domain/opportunity/context";
+import { evaluateRules } from "@/src/domain/shared";
+import { OpportunityContext } from "@/src/domain/opportunity";
 import { Recommendation, RecommendationEffort, RecommendationImpact, RecommendationPriority } from "../models/recommendation";
 import { customerDiscoveryRecommendations } from "../knowledge/customer-discovery";
 import { businessModelRecommendations } from "../knowledge/business-model";

@@ -1,5 +1,7 @@
 import { InterviewAnswers } from "@/types/interview";
-import { OpportunityContext } from "@/src/domain/opportunity/context";
+// Type-only: avoids a runtime circular import with opportunity's own
+// barrel, which itself imports RouteContext (type-only) from here.
+import type { OpportunityContext } from "@/src/domain/opportunity";
 
 export type PreferredPath = "business" | "side_hustle" | "job" | "explore";
 export type RiskBand = "low" | "moderate" | "high";

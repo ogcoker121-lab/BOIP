@@ -1,6 +1,6 @@
 import { InterviewAnswers } from "@/types/interview";
-import { buildOpportunityContext } from "@/src/domain/opportunity/context";
-import { NextMoveType } from "@/src/domain/shared/next-move-type";
+import { buildOpportunityContext } from "@/src/domain/opportunity";
+import { NextMoveType } from "@/src/domain/shared";
 import { buildRouteContext, RouteContext } from "../models/route-context";
 import { decideRoute } from "../engine/route-decision-engine";
 
