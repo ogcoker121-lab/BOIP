@@ -18,7 +18,29 @@
 
 ---
 
-## 2. Target Customer
+## 2. Product Principles
+
+These principles are the standard every future BOIP decision — product and engineering alike — is measured against. Everything else in this document is downstream of them.
+
+**Does this improve the founder's journey?** This is the acceptance bar for everything BOIP builds from v1.0 onward. Every proposed feature must answer it directly. If the answer is yes, it belongs on the roadmap. If the only justification is that it makes the architecture more elegant, more generic, or more "complete," it faces a much higher bar — architectural quality serves the founder's journey; it is not a goal in itself. This marks the platform's shift from an architecture-driven build (v0.1–v0.9.1: build the engine) to a user-driven one (v1.0 onward: build what a founder actually needs next).
+
+**No invented content, ever.** Every word BOIP shows a founder traces back to something real: their own answers, or BOIP's own curated knowledge. Nothing is guessed, generated, or fabricated to sound plausible. This is what separates BOIP from a generic AI chatbot, and it is non-negotiable — it is not a v1.0 constraint to be relaxed later, it is what BOIP is.
+
+**Every decision is explainable.** A founder should never have to take BOIP's word for a recommendation. Explainability is a first-class output, not a debug feature or an afterthought — the same conviction that produced the Decision Trace and the "Why BOIP recommended this" explanation.
+
+**Knowledge drives decisions. Engines evaluate knowledge. UI renders decisions.** The architectural expression of the two principles above: business logic is never branching application code, it is data ("knowledge" — rules, weights, curated text) evaluated by one shared, generic, reusable engine. This is what makes every decision traceable and auditable by construction, not by extra effort bolted on afterward.
+
+**Single Source of Truth.** No domain duplicates another domain's logic or knowledge. If two parts of the product need the same fact, one computes it and the other consumes that output — never a second, independent computation of the same thing that can silently drift out of sync.
+
+**Deterministic before generative.** BOIP earns the right to use AI later by first proving what a fully deterministic, fully explainable product can do. AI, when it eventually arrives, is additive to this foundation, not a replacement for it — this is a sequencing principle, not a permanent rejection of AI.
+
+**Say what isn't built, never fake it.** Where a capability doesn't exist yet (live job listings, a personalised career plan), BOIP states that plainly rather than showing fabricated content. This is the same honesty principle as "no invented content," applied to gaps in the product itself, not just its answers.
+
+**Narrow scope, deliberately.** BOIP grows one justified capability at a time, each in its own domain, never bolted onto an existing one it isn't about. Scope creep is treated as a cost to actively resist, not a natural byproduct of momentum.
+
+---
+
+## 3. Target Customer
 
 **Founder stage.** Pre-idea to pre-revenue. Specifically: someone who has an idea, a problem they've noticed, or a vague direction ("I want to build something" / "I want a side hustle" / "I'm not sure if I should look for a job or start something"), but has not yet built anything, has not raised money, and has not made a firm commitment to a specific path.
 
@@ -31,11 +53,11 @@
 - "I want a real business plan but can't afford a consultant and don't trust a generic AI chatbot to give me a straight answer."
 - "I've read about frameworks like Lean Startup or Customer Discovery but don't know how to apply them to my situation."
 
-**Why they would buy BOIP.** (Framed forward-looking — v1.0 beta ships without payments; see Section 5 and Section 9.) A founder in this position typically faces three alternatives: do nothing, pay for a consultant/coach they can't yet justify the cost of, or use a generic AI chatbot that invents plausible-sounding but unverifiable advice. BOIP's differentiated value is that every recommendation is **explainable and traceable** — the founder can see exactly which of their own answers and which BOIP knowledge rule produced each recommendation — at a price point and time investment (minutes, not sessions) accessible before they've validated the idea is worth a bigger spend. The willingness to pay is expected to come after the beta demonstrates the free experience is genuinely useful, not before.
+**Why they would buy BOIP.** (Framed forward-looking — v1.0 beta ships without payments; see Section 6 and Section 10.) A founder in this position typically faces three alternatives: do nothing, pay for a consultant/coach they can't yet justify the cost of, or use a generic AI chatbot that invents plausible-sounding but unverifiable advice. BOIP's differentiated value is that every recommendation is **explainable and traceable** — the founder can see exactly which of their own answers and which BOIP knowledge rule produced each recommendation — at a price point and time investment (minutes, not sessions) accessible before they've validated the idea is worth a bigger spend. The willingness to pay is expected to come after the beta demonstrates the free experience is genuinely useful, not before.
 
 ---
 
-## 3. Core Founder Journey
+## 4. Core Founder Journey
 
 ```mermaid
 flowchart TD
@@ -66,13 +88,13 @@ flowchart TD
 
 **Note on terminology.** "Recommendations" and "Explainable Decisions" (steps 4–5 in the conceptual journey diagram at the top of this document) are not separate screens today — they are sections within the Opportunity Snapshot screen: "Recommended Actions" (the ranked recommendation list) and "Why BOIP recommended this" (a collapsed-by-default explanation trace). This document describes the platform as it is; unifying these into distinct screens is not in scope for v1.0 unless explicitly added below.
 
-**Note on Next Move destinations.** The Next Move card's one clickable primary action currently routes to one of four destinations depending on the founder's decided route: a library page for a matched business opportunity, a library page for a matched side-hustle opportunity, or one of two explicit placeholder pages (`/jobs`, `/skills`) that state plainly what isn't built yet rather than fabricating content. These placeholders are real, shipped v1.0 surface area — see Section 4.
+**Note on Next Move destinations.** The Next Move card's one clickable primary action currently routes to one of four destinations depending on the founder's decided route: a library page for a matched business opportunity, a library page for a matched side-hustle opportunity, or one of two explicit placeholder pages (`/jobs`, `/skills`) that state plainly what isn't built yet rather than fabricating content. These placeholders are real, shipped v1.0 surface area — see Section 5.
 
 ---
 
-## 4. Features Included in v1.0
+## 5. Features Included in v1.0
 
-Every feature below is already built as of v0.9.1. v1.0 does not add new capability; it hardens what exists into a public-beta-ready state (see Section 7).
+Every feature below is already built as of v0.9.1. v1.0 does not add new capability; it hardens what exists into a public-beta-ready state (see Section 8).
 
 ### 4.1 Founder Interview
 - **Purpose:** Capture a founder's profile and idea in a fixed, linear, 19-question flow, tagged by the capability that consumes each answer (Founder Discovery, Route Decision, Opportunity Matching).
@@ -136,12 +158,12 @@ Every feature below is already built as of v0.9.1. v1.0 does not add new capabil
 
 ---
 
-## 5. Features Explicitly Excluded
+## 6. Features Explicitly Excluded
 
 The following are **not** part of v1.0 and must not be introduced without a new, separately-approved specification:
 
 - AI-generated advice, LLM calls, or any generative text of any kind
-- Payments or billing (Stripe is planned, not integrated — see Section 6 and Section 10)
+- Payments or billing (Stripe is planned, not integrated — see Section 7 and Section 11)
 - Authentication or user accounts (no login, no founder identity beyond a locally-stored interview id)
 - Founder Reports (a distinct, richer artifact than the Business Plan — not built)
 - PDF or DOCX export of any output
@@ -150,11 +172,11 @@ The following are **not** part of v1.0 and must not be introduced without a new,
 - Live market data, live job listings, or live vacancy search (explicitly deferred — `/jobs` states this outright rather than fabricating listings)
 - A Knowledge Graph or graph-based traversal (the Catalog does flat id-based relationship lookups only, by design)
 - Analytics/product telemetry (PostHog is planned, not integrated)
-- Production monitoring, structured logging, or alerting (see Section 7)
+- Production monitoring, structured logging, or alerting (see Section 8)
 
 ---
 
-## 6. Technical Architecture
+## 7. Technical Architecture
 
 **Stack (as built):**
 - **Next.js** (16.3.0, App Router) — server components by default; client components only where interactivity requires it (the interview wizard, multi-select controls)
@@ -165,7 +187,7 @@ The following are **not** part of v1.0 and must not be introduced without a new,
 **Stack (planned, not yet integrated — required before/at beta launch, scoped separately):**
 - **Stripe** — no payments capability exists yet; not required for a free beta, required before any paid tier
 - **Vercel** — the intended production deployment target; no production deployment has been configured or verified in this codebase yet
-- **PostHog** — no analytics/telemetry exists yet; required to measure the Beta Success Criteria in Section 8 quantitatively
+- **PostHog** — no analytics/telemetry exists yet; required to measure the Beta Success Criteria in Section 9 quantitatively
 
 ```mermaid
 flowchart LR
@@ -200,7 +222,7 @@ Key architectural properties (see `founder-interview-app/docs/ARCHITECTURE.md` f
 
 ---
 
-## 7. Production Readiness Checklist
+## 8. Production Readiness Checklist
 
 This checklist states current status as of v0.9.1, and what is still required to reach a stable public beta.
 
@@ -209,18 +231,18 @@ This checklist states current status as of v0.9.1, and what is still required to
 | **Testing** | Vitest domain test suite (82 tests) + architecture boundary tests + Playwright E2E covering the full founder journey. Coverage reporting configured, no threshold. | Sufficient for beta as-is. A coverage threshold and CI wiring (tests running automatically on every PR) are recommended, not yet required. |
 | **Accessibility** | Full manual audit completed (keyboard, focus, semantics, ARIA, screen reader, WCAG 2.1 AA contrast) and every finding fixed. | Sufficient for beta as-is. No automated accessibility testing (e.g. axe-core in CI) exists yet — recommended for ongoing regression protection, not a beta blocker. |
 | **Performance** | Low-risk static pre-rendering for all known framework/opportunity pages. No load testing, no bundle-size budget, no CDN/caching strategy defined. | Acceptable for a beta at expected low initial traffic. Needs revisiting before any real marketing push. |
-| **Security** | No authentication exists — every visitor is anonymous, with no accounts to compromise. Supabase credentials are server-only, never exposed to the browser. No rate limiting, no CSRF/CORS hardening beyond Next.js defaults, no dependency-vulnerability scanning configured. | Must decide and document the beta's identity model (fully anonymous vs. lightweight session-based) before launch — this is a product decision, not just an engineering one (see open question in Section 10). Rate limiting on the interview API routes is recommended before any public launch to prevent abuse. |
+| **Security** | No authentication exists — every visitor is anonymous, with no accounts to compromise. Supabase credentials are server-only, never exposed to the browser. No rate limiting, no CSRF/CORS hardening beyond Next.js defaults, no dependency-vulnerability scanning configured. | Must decide and document the beta's identity model (fully anonymous vs. lightweight session-based) before launch — this is a product decision, not just an engineering one (see open question in Section 12). Rate limiting on the interview API routes is recommended before any public launch to prevent abuse. |
 | **Privacy** | No privacy policy, no cookie/consent notice, no data-retention policy. Interview answers may include personal/business information with no stated handling commitment. | **Required before public beta launch.** A minimal privacy notice and a stated data-retention policy (especially given free-text answers) must exist before real users are invited in. |
 | **Logging** | `console.error` only, for persistence failures; nothing structured, nothing centralized. | A basic structured logging setup (even just centralized error capture) is recommended before beta, so failures are discoverable without a user report. |
 | **Monitoring** | None. No uptime checks, no error-rate alerting, no dashboards. | Recommended before beta: minimal uptime monitoring and an error-tracking service (e.g. Sentry or equivalent) wired into `app/error.tsx` and the API routes. |
-| **Backups** | Supabase's own backup mechanism applies when persistence is configured; the in-memory fallback has no backup by design (data is lost on server restart). | The beta's persistence model must be decided (see Section 10 open question) — if Supabase is used in production, confirm its backup/retention settings meet the stated privacy policy. |
+| **Backups** | Supabase's own backup mechanism applies when persistence is configured; the in-memory fallback has no backup by design (data is lost on server restart). | The beta's persistence model must be decided (see Section 12 open question) — if Supabase is used in production, confirm its backup/retention settings meet the stated privacy policy. |
 | **Error handling** | Every domain returns `null`/empty on a missing or invalid input rather than throwing; every page renders a shared `EmptyState`. A root error boundary (`app/error.tsx`) with a shared `ErrorState` and retry catches genuinely unexpected crashes. | Sufficient for beta as-is. |
 
 ---
 
-## 8. Beta Success Criteria
+## 9. Beta Success Criteria
 
-Measurable outcomes that define a successful public beta (require PostHog or equivalent analytics — see Section 6 — to measure quantitatively; not yet instrumented):
+Measurable outcomes that define a successful public beta (require PostHog or equivalent analytics — see Section 7 — to measure quantitatively; not yet instrumented):
 
 - **Completion rate:** A meaningful majority of founders who start the interview finish it and reach the Opportunity Snapshot.
 - **Business Plan generation success:** Every founder who reaches "View Full Business Plan" successfully receives a complete plan with zero errors — this is deterministic and should be at or near 100%.
@@ -231,7 +253,7 @@ Measurable outcomes that define a successful public beta (require PostHog or equ
 
 ---
 
-## 9. Known Limitations
+## 10. Known Limitations
 
 Stated plainly, as intentional constraints of v1.0 — not defects:
 
@@ -243,11 +265,11 @@ Stated plainly, as intentional constraints of v1.0 — not defects:
 - **Fixed interview.** The 19 questions are the same, in the same order, for every founder — there is no branching within the interview itself (branching happens only in how the answers are *interpreted* downstream, via the Route Decision engine).
 - **Single-tenant experience.** No collaboration, no sharing, no multi-user access to one founder's plan.
 - **No live data.** Opportunity matches come from a curated, static library (16 entries); nothing is fetched from a live market, job board, or real-time source.
-- **No analytics.** Product usage is not currently measured, which limits how precisely Section 8's success criteria can be evaluated at beta launch (see Section 6).
+- **No analytics.** Product usage is not currently measured, which limits how precisely Section 9's success criteria can be evaluated at beta launch (see Section 7).
 
 ---
 
-## 10. Post-v1.0 Roadmap
+## 11. Post-v1.0 Roadmap
 
 Summarized, not scoped — each of these requires its own specification before implementation begins:
 
@@ -259,16 +281,16 @@ Summarized, not scoped — each of these requires its own specification before i
 - **Knowledge Graph** — true graph traversal over the Catalog's relationships, beyond today's flat id-based reverse lookup
 - **Multi-agent workflows** — orchestrated, specialized reasoning over a founder's data (dependent on the AI-assisted explanations phase landing first)
 - **Enterprise features** — team accounts, cohort/accelerator-facing views, admin/reporting tooling
-- **Analytics and observability** — PostHog integration, structured logging, monitoring/alerting (some of this may need to land *before* beta launch per Section 7, not strictly "post-v1.0")
+- **Analytics and observability** — PostHog integration, structured logging, monitoring/alerting (some of this may need to land *before* beta launch per Section 8, not strictly "post-v1.0")
 - **Architectural evolution flagged during v0.9.1** — a true evaluation graph (Interview Signals → Knowledge Evaluation → Decision → Recommendations/Opportunity Matches → Framework References → Presentation) was discussed as the eventual replacement for today's parallel-pipeline evaluation, which would also naturally resolve TD-006 (the duplicate `matchOpportunities()` call in the `skill_path` route, deliberately left untouched through v0.9.1). Not scoped for v1.0.
 
 ---
 
-## Open questions for Product before implementation begins
+## 12. Open Questions for Product Before Implementation Begins
 
 These are decisions this document surfaces but does not make — flagging rather than silently assuming an answer:
 
-1. **Identity model for beta.** Fully anonymous (today's model, with all its resume/privacy tradeoffs) vs. some lightweight session mechanism, without going as far as full authentication (explicitly excluded, Section 5).
+1. **Identity model for beta.** Fully anonymous (today's model, with all its resume/privacy tradeoffs) vs. some lightweight session mechanism, without going as far as full authentication (explicitly excluded, Section 6).
 2. **Persistence commitment for beta.** Whether Supabase is required to be configured for the public beta launch (i.e., no founder should ever silently lose their data to a server restart) or whether the in-memory fallback's ephemerality is acceptable and should simply be disclosed.
-3. **Feedback mechanism.** Section 8's usability criterion has no collection mechanism today — worth deciding whether this is in scope for v1.0 engineering work or handled outside the product (e.g. manual outreach).
+3. **Feedback mechanism.** Section 9's usability criterion has no collection mechanism today — worth deciding whether this is in scope for v1.0 engineering work or handled outside the product (e.g. manual outreach).
 4. **Privacy policy ownership.** Whether Product/Legal drafts this, or whether Engineering is expected to propose a first draft as part of v1.0 delivery.
