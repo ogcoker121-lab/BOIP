@@ -4,6 +4,38 @@ This is a small, deliberately narrow-scoped app. Before touching
 anything, read `docs/ARCHITECTURE.md` for *why* it's structured the way
 it is - this document is the practical *how*.
 
+## Specification-First Development
+
+BOIP v1.0 onward follows one governing sequence for every feature:
+
+```
+Product Specification -> Technical Design -> Implementation -> Review -> Merge
+```
+
+Not "idea, then code, then a specification written to match what got
+built." The specification comes first and is approved before
+implementation begins; a technical design (an implementation plan,
+proposed for anything non-trivial) follows it and is itself approved
+before code is written; only then does implementation start.
+
+**`BOIP-Product/docs/BOIP-v1.0-Product-Specification.md`** (repo root)
+is the authoritative product specification for BOIP v1.0 - the contract
+every feature traces back to. Its **Product Principles** section
+(founder journey first, no invented content, explainable decisions,
+Single Source of Truth, deterministic before generative, honest about
+limitations, narrow scope by design) functions as a set of
+non-functional requirements: a PR that can't justify itself against
+them needs to explain why, not skip the question.
+
+A record of the major *irreversible* architecture decisions behind this
+codebase (why BOIP is deterministic-first, why AI is an enhancement
+layer rather than the reasoning engine, why stable ids exist, why the
+Knowledge Catalog owns identity, why domains only communicate through
+public APIs, why Business Plans compose knowledge instead of
+generating it, why explainability is mandatory) is planned as
+`BOIP-Product/docs/ARCHITECTURE_DECISIONS.md`, to be written before
+public beta launch - not yet created.
+
 ## Setup
 
 ```bash
